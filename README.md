@@ -33,14 +33,20 @@ The frontend module of the employee management system was developed using **Reac
 
 ### **Steps to Set Up and Run the Frontend**
 
-1. **Install Dependencies**:
+1.  **Clone the repository:**
+    
+    ```bash
+    git clone https://github.com/em2websolution/ManageEmployees.Front
+    ```
+
+2. **Install Dependencies**:
    - Ensure you have **Node.js** installed on your machine.
    - Navigate to the frontend project directory in your terminal and run:
      ```bash
      npm install
      ```
 
-2. **Configure Environment Variables**:
+3. **Configure Environment Variables**:
    - Create a `.env.local` file in the root of the project if it does not already exist.
    - Add the required environment variables. Example:
      ```dotenv
@@ -49,14 +55,14 @@ The frontend module of the employee management system was developed using **Reac
       NEXT_PUBLIC_SECRET_ENCRYPT_KEY=@my-secret-key-@
      ```
 
-3. **Run the Development Server**:
+4. **Run the Development Server**:
    - Start the local development server:
      ```bash
      npm run dev
      ```
    - The frontend will be available at [http://localhost:3000](http://localhost:3000).
 
-4. **Build for Production**:
+5. **Build for Production**:
    - To generate the production build, run:
      ```bash
      npm run build
