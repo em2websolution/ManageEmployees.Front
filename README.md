@@ -134,9 +134,9 @@ sequenceDiagram
 
 ----------
 
-## **4. Business Rules for Employee Management**
+## **4. Business Rules for Employee Management**  <a id="business-rules-for-employee-management"></a>
 
-### **Create Employee**
+### **Create Employee** <a id="create-employee"></a>
 
 -   **Fields and Rules**:
     -   **First and Last Name**: Required.
@@ -151,7 +151,7 @@ sequenceDiagram
 
 ----------
 
-## **5. Notifications**
+## **5. Notifications** <a id="notifications"></a>
 
 -   **React Toastify** is used to provide real-time alerts.
 
@@ -163,7 +163,7 @@ toast.error("Failed to fetch employees!");
 
 ----------
 
-## **6. Environment Variables**
+## **6. Environment Variables** <a id="environment-variables"></a>
 
 ```dotenv
 NEXT_PUBLIC_VERSAO=1.0.0
@@ -174,7 +174,7 @@ NEXT_PUBLIC_SECRET_ENCRYPT_KEY=@my-secret-key-@
 
 ----------
 
-## **7. Authentication Workflow**
+## **7. Authentication Workflow** <a id="authentication-workflow"></a>
 
 ```mermaid
 sequenceDiagram
@@ -201,7 +201,7 @@ sequenceDiagram
 
 ----------
 
-## **8. Homepage Workflow**
+## **8. Homepage Workflow** <a id="homepage-workflow"></a>
 
 ```mermaid
 graph TD;
@@ -216,9 +216,9 @@ graph TD;
 
 ----------
 
-## **9. Toast Notifications**
+## **9. Toast Notifications** <a id="toast-notifications"></a>
 
-### **Example**
+### **Example** <a id="example"></a>
 
 ```javascript
 toast.success("Login successful!");
@@ -228,7 +228,7 @@ toast.error("Invalid credentials!");
 
 ----------
 
-## **10. Dependencies**
+## **10. Dependencies** <a id="dependencies"></a>
 
 -   **React**: v18.3.1
 -   **Next.js**: v15.1.2
@@ -239,7 +239,7 @@ toast.error("Invalid credentials!");
 
 ----------
 
-## **11. Scripts**
+## **11. Scripts** <a id="scripts"></a>
 
 ```json
 "scripts": {
@@ -252,7 +252,7 @@ toast.error("Invalid credentials!");
 
 ----------
 
-## **12. Business Rules Validation**
+## **12. Business Rules Validation** <a id="business-rules-validation"></a>
 
 -   **Password Validation**
 -   **Age Restriction**
@@ -260,7 +260,7 @@ toast.error("Invalid credentials!");
 
 ----------
 
-## **13. Security Measures**
+## **13. Security Measures** <a id="security-measures"></a>
 
 -   **JWT Token Security**
 -   **Password Encryption in Payload** (protects against MITM attacks)
