@@ -7,11 +7,9 @@ export type UsersType = {
   email: string
   firstName: string
   lastName: string
-  managerId: string
   avatar: string
-  contacts: string[]
+  phoneNumber: string
   avatarColor?: ThemeColor
   document: string
-  managerName: string
   password?: string
 }

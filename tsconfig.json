@@ -60,6 +60,14 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/fake-db",
+    "src/views/list/TableFilters.tsx",
+    "src/@core/styles/libs/fullcalendar",
+    "src/@core/styles/libs/keen-slider",
+    "src/@core/styles/libs/react-cleave",
+    "src/@core/styles/libs/react-datepicker",
+    "src/@core/styles/libs/react-dropzone",
+    "src/@core/styles/libs/react-hot-toast"
   ]
 }

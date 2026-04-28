@@ -8,9 +8,9 @@ const horizontalMenuData = (): HorizontalMenuDataType[] => [
     icon: 'bx-home'
   },
   {
-    label: 'Cadastro',
-    href: '/about',
-    icon: 'bx-info-circle'
+    label: 'Tasks',
+    href: '/tasks',
+    icon: 'bx-task'
   }
 ]
 

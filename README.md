@@ -1,280 +1,166 @@
-# FrontEnd Project ManageEmployees | React with Next.js
+# ManageEmployees — Frontend (Next.js 15)
 
-## **Table of Contents**
+## Overview
 
-- 📂 [Module Overview](#module-overview)
-- 📂 [How to Run the Frontend](#run)
-- ⚙️ [Features Implemented](#features-implemented)
-  - 🔑 [Authentication Module](#authentication-module)
-  - 📦 [User Information Storage](#user-information-storage)
-  - 🖥️ [Post-login System](#post-login-system)
-- 📊 [Homepage (Employee Management Dashboard)](#homepage)
-  - 📋 [Key Features](#key-features)
-- 📜 [Business Rules for Employee Management](#business-rules-for-employee-management)
-  - ➕ [Create Employee](#create-employee)
-- 🔔 [Notifications](#notifications)
-- 🔧 [Environment Variables](#environment-variables)
-- 🔄 [Authentication Workflow](#authentication-workflow)
-- 📈 [Homepage Workflow](#homepage-workflow)
-- 🔥 [Toast Notifications](#toast-notifications)
-  - 🎉 [Example](#example)
-- 📦 [Dependencies](#dependencies)
-- 🛠️ [Scripts](#scripts)
-- 🛡️ [Business Rules Validation](#business-rules-validation)
-- 🔐 [Security Measures](#security-measures)
-
-## **1. Module Overview** <a id="module-overview"></a>
-
-The frontend module of the employee management system was developed using **React** with **Next.js** to consume the backend API. It focuses on user authentication, employee management, and user interface features such as filtering, adding, and managing employees.
+Single-page application for employee and task management built with **Next.js 15** (App Router, Turbopack), **MUI v6**, **TanStack React Table**, **TypeScript**, and **Axios**.
 
 ---
 
-## **How to Run the Frontend** <a id="run"></a>
+## Getting Started
 
-### **Steps to Set Up and Run the Frontend**
+```bash
+cd ManageEmployees.Front
 
-1.  **Clone the repository:**
-    
-    ```bash
-    git clone https://github.com/em2websolution/ManageEmployees.Front
-    ```
+# Install dependencies
+npm install
 
-2. **Install Dependencies**:
-   - Ensure you have **Node.js** installed on your machine.
-   - Navigate to the frontend project directory in your terminal and run:
-     ```bash
-     npm install
-     ```
+# Development server (http://localhost:3000)
+npm run dev
 
-3. **Configure Environment Variables**:
-   - Create a `.env.local` file in the root of the project if it does not already exist.
-   - Add the required environment variables. Example:
-     ```dotenv
-      NEXT_PUBLIC_VERSAO=1.0.0
-      NEXT_PUBLIC_BASE_URL=https://localhost:64715/
-      NEXT_PUBLIC_SECRET_ENCRYPT_KEY=@my-secret-key-@
-     ```
-
-4. **Run the Development Server**:
-   - Start the local development server:
-     ```bash
-     npm run dev
-     ```
-   - The frontend will be available at [http://localhost:3000](http://localhost:3000).
-
-5. **Build for Production**:
-   - To generate the production build, run:
-     ```bash
-     npm run build
-     ```
-   - Then, start the production server with:
-     ```bash
-     npm run start
-     ```
-
----
-
-### **Default User Credentials** <a id="default-user-credentials"></a>
-
-To simplify access during development, the system provides a **default user** for login:
-
-- **Username**: `admin@company.com`
-- **Password**: `Admin123!`
-
----
-
-
-## **2. Features Implemented** <a id="features-implemented"></a>
-
-### **1. Authentication Module** <a id="authentication-module"></a>
-- **Integration with Backend**: The login module authenticates the user via the backend API.
-- **Axios Adapter for HTTP Requests**:
-  - All requests are managed using an `Axios` instance.
-  - After login, the token obtained from the backend is automatically set in the `Authorization` header for all subsequent requests.
-  - **Sensitive Data Security**: Passwords are encrypted before being sent to the backend, ensuring protection against man-in-the-middle attacks.
-
-### **2. User Information Storage** <a id="user-information-storage"></a>
-- On successful login:
-  - User and token information are stored securely in `localStorage`.
-  - The `Authorization` header is updated to ensure authenticated communication with the backend.
-
-### **3. Post-login System** <a id="post-login-system"></a>
-- Displays a **Header** with:
-  - The logged-in user's **name** and **role**.
-  - A **logout button** to terminate the session and clear stored user data.
-
----
-
-## **3. Homepage (Employee Management Dashboard)** <a id="homepage"></a>
-
-### **Key Features** <a id="key-features"></a>
-1. **Employee Grid**:
-   - Displays a list of employees retrieved from the backend.
-   - Includes actions for editing or deleting employees.
-2. **Filters**:
-   - Allows users to search for specific employees within the grid.
-3. **Add Employee Button**:
-   - Opens a form to create a new employee, adhering to the business rules.
-
-```mermaid
-sequenceDiagram
-    participant User as User
-    participant Frontend as Frontend (React/Next.js)
-    participant Backend as Backend (API)
-    participant Database as Database
-
-    User->>Frontend: Opens Dashboard
-    Frontend->>Backend: GET /ListAll (Fetch Employee Data)
-    Backend->>Database: Retrieve Employee List
-    Database-->>Backend: Return Employee Data
-    Backend-->>Frontend: Return Employee List
-    Frontend-->>User: Display Employee List in Grid
-
+# Production build
+npm run build
 ```
 
-----------
+### Environment Variables
 
-## **4. Business Rules for Employee Management**  <a id="business-rules-for-employee-management"></a>
-
-### **Create Employee** <a id="create-employee"></a>
-
--   **Fields and Rules**:
-    -   **First and Last Name**: Required.
-    -   **Email**: Required and unique.
-    -   **Document Number**: Required and unique.
-    -   **Phone Numbers**: Must have more than one contact.
-    -   **Manager Name**: Required (_Manager can be an employee_).
-    -   **Role Validation**:
-        -   Employees cannot create users with higher roles than their own.
-    -   **Password**: Follows best security practices.
-    -   **Age Restriction**: Validate that the person is not a minor.
-
-----------
-
-## **5. Notifications** <a id="notifications"></a>
-
--   **React Toastify** is used to provide real-time alerts.
-
-```javascript
-toast.success("Employee added successfully!");
-toast.error("Failed to fetch employees!");
-
-```
-
-----------
-
-## **6. Environment Variables** <a id="environment-variables"></a>
+Create `.env.local` in the project root:
 
 ```dotenv
-NEXT_PUBLIC_VERSAO=1.0.0
 NEXT_PUBLIC_BASE_URL=https://localhost:64715/
-NEXT_PUBLIC_SECRET_ENCRYPT_KEY=@my-secret-key-@
-
 ```
 
-----------
+---
 
-## **7. Authentication Workflow** <a id="authentication-workflow"></a>
+## Default Credentials
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Frontend
-    participant Backend
-    participant Database
+| Email | Password | Role |
+|-------|----------|------|
+| `admin@company.com` | `Admin123!` | Administrator |
 
-    User->>Frontend: Enters Credentials
-    Frontend->>Backend: POST /SignIn with encrypted credentials
-    Backend->>Database: Validate credentials
-    Database-->>Backend: Return user data & roles
+---
 
-    alt Success
-        Backend-->>Frontend: Return JWT Token
-        Frontend->>LocalStorage: Store Token & User Info
-        Frontend-->>User: Redirect to Dashboard
-    else Failure
-        Backend-->>Frontend: Return Error
-        Frontend-->>User: Show error message
-    end
+## Architecture
 
 ```
-
-----------
-
-## **8. Homepage Workflow** <a id="homepage-workflow"></a>
-
-```mermaid
-graph TD;
-    A[User Requests Access] --> B[React Frontend]
-    B --> C[Backend API]
-    C --> D[Database]
-    D --> C
-    C --> B
-    B --> E[Dashboard]
-
+src/
+├── app/                    → Routes (App Router)
+│   ├── (blank-layout-pages)/  → Login page (no sidebar)
+│   └── (dashboard)/           → Protected pages (Home, Tasks)
+├── components/             → Providers, Layout components
+├── configs/                → Theme, auth config
+├── contexts/               → AuthContext, UsersContext, TasksContext
+├── core/                   → Clean Architecture (Gateway pattern)
+│   ├── domain/gateways/    → Interfaces (UserGateway, TaskGateway, HttpClient)
+│   └── infra/              → Implementations (Axios, Gateway impls)
+├── data/navigation/        → Menu definitions
+├── hooks/                  → useAuth, useUsers, useTasks
+├── types/                  → TypeScript types
+├── utils/                  → Utility functions
+└── views/                  → UI components
+    ├── Login.tsx
+    ├── list/               → UserListTable, UserDrawer
+    └── tasks/              → TaskListTable, TaskDrawer
 ```
 
-----------
+### Key Patterns
 
-## **9. Toast Notifications** <a id="toast-notifications"></a>
+- **Gateway Pattern**: Interface-based data access (`UserGateway`, `TaskGateway`) with Axios implementations
+- **Context API**: State management for auth, users, and tasks
+- **Singleton HTTP Client**: Axios instance with JWT interceptor
+- **Auth Guard**: Pages check `accessToken` in localStorage before rendering
 
-### **Example** <a id="example"></a>
+---
 
-```javascript
-toast.success("Login successful!");
-toast.error("Invalid credentials!");
+## Pages
 
+| Route | Layout | Description |
+|-------|--------|-------------|
+| `/login` | Blank | Authentication form |
+| `/home` | Dashboard | Employee list with CRUD |
+| `/tasks` | Dashboard | Task list with CRUD |
+
+---
+
+## Features
+
+### Authentication
+- JWT token stored in `localStorage`
+- Auto-injected via Axios request interceptor
+- Login/logout with redirect
+- Role and userId persisted for UI display
+
+### User Management (`/home`)
+- List all users with role column
+- Create user via drawer (firstName, lastName, email, password, role, phoneNumber, docNumber)
+- Edit/delete users
+- Roles: Administrator, Employee
+
+### Task Management (`/tasks`)
+- List all tasks in table
+- Create task via drawer (title, description, status, dueDate)
+- Edit/delete tasks
+- UserId automatically set from JWT (not sent by frontend)
+- Status values: Pending, InProgress, Completed
+
+---
+
+## Provider Hierarchy
+
+```tsx
+<AuthProvider>
+  <UsersProvider>
+    <TasksProvider>
+      <Providers> {/* Theme, Settings, Navigation */}
+        {children}
+      </Providers>
+    </TasksProvider>
+  </UsersProvider>
+</AuthProvider>
 ```
 
-----------
+---
 
-## **10. Dependencies** <a id="dependencies"></a>
+## API Integration
 
--   **React**: v18.3.1
--   **Next.js**: v15.1.2
--   **Axios**: v1.6.8
--   **React Toastify**: v10.0.5
--   **MUI**: v6.2.1
--   **TailwindCSS**: v3.4.17
+All API calls go through `AxiosHttpClient` singleton:
+- Base URL: `NEXT_PUBLIC_BASE_URL`
+- Token: Read from `localStorage('accessToken')` and injected in `Authorization: Bearer` header
 
-----------
+### Endpoints Consumed
 
-## **11. Scripts** <a id="scripts"></a>
+| Gateway | Method | Backend Route |
+|---------|--------|---------------|
+| UserGateway | signIn | POST `/Login/SignIn` |
+| UserGateway | signUp | POST `/Login/SignUp` |
+| UserGateway | getAllUsers | GET `/Login/ListAll` |
+| UserGateway | updateUser | PUT `/Login/{userId}` |
+| UserGateway | deleteUser | DELETE `/Login/{userId}` |
+| TaskGateway | getAllTasks | GET `/Tasks` |
+| TaskGateway | getTaskById | GET `/Tasks/{id}` |
+| TaskGateway | createTask | POST `/Tasks` |
+| TaskGateway | updateTask | PUT `/Tasks/{id}` |
+| TaskGateway | deleteTask | DELETE `/Tasks/{id}` |
+
+---
+
+## Scripts
 
 ```json
-"scripts": {
+{
   "dev": "next dev --turbopack",
   "build": "next build",
   "start": "next start"
 }
-
 ```
 
-----------
+---
 
-## **12. Business Rules Validation** <a id="business-rules-validation"></a>
+## Stack
 
--   **Password Validation**
--   **Age Restriction**
--   **Role Hierarchy Control**
-
-----------
-
-## **13. Security Measures** <a id="security-measures"></a>
-
--   **JWT Token Security**
--   **Password Encryption in Payload** (protects against MITM attacks)
--   **Secure HTTP Headers**
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant Server
-    participant Database
-
-    Client->>Server: Sends encrypted password
-    Server->>Database: Validate hashed password
-    Database-->>Server: Success
-    Server-->>Client: Return JWT Token
-
-```
+- **Next.js** 15 (App Router, Turbopack)
+- **React** 19
+- **MUI** v6
+- **TanStack React Table** v8
+- **Axios** 1.6
+- **Tailwind CSS** 3
+- **TypeScript** 5

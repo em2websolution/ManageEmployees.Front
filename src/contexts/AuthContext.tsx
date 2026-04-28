@@ -7,14 +7,13 @@ import { useRouter } from 'next/navigation';
 
 import { toast } from 'sonner'
 
-import CryptoJS from 'crypto-js';
-
 import type { AuthValuesType, ErrCallbackType, LoginParams, UserDataType } from './types';
 
 import authConfig from '@configs/auth';
 
 import { userGateway } from '@/core/infra/gateways/user.gateway.impl.singleton';
-import { httpInstance } from '@/core/infra/services/http/http-client.factory';
+
+import { httpInstance } from '@/core/infra/services/http/http-client.factory';import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
 
 const defaultProvider: AuthValuesType = {
   user: null,
@@ -61,28 +60,11 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     setLoading(true)
 
-    function encrypt(data: string) {
-      const key = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_SECRET_ENCRYPT_KEY!)
-      const iv = CryptoJS.lib.WordArray.random(16);
-
-      const encrypted = CryptoJS.AES.encrypt(data, key, {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-      });
-
-      const encryptedData =
-        iv.toString(CryptoJS.enc.Hex) + ':' +
-        encrypted.ciphertext.toString(CryptoJS.enc.Base64);
-
-      return encryptedData;
-    }
-
     userGateway
-      .signIn(params.userName, encrypt(params.password))
+      .signIn(params.userName, params.password)
       .then(async (response: any) => {
 
-        toast.success('Login realizado com sucesso!')
+        toast.success('Login successful!')
 
         window.localStorage.setItem(
           authConfig.storageTokenKeyName,
@@ -92,6 +74,7 @@ const AuthProvider = ({ children }: Props) => {
         window.localStorage.setItem('userData', JSON.stringify({
           role: response.role,
           username: response.firstName,
+          userId: response.userId,
         }))
 
         httpInstance.setAuthorizationHeader('Bearer ' + response.accessToken)
@@ -100,7 +83,7 @@ const AuthProvider = ({ children }: Props) => {
         setLoading(false)
       })
       .catch((err: any) => {
-        toast.error('Erro ao realizar login!')
+        toast.error(getApiErrorMessage(err, 'Login failed!'))
         setLoading(false)
         if (err.code === 'ERR_NETWORK') return
         if (errorCallback) errorCallback(err)

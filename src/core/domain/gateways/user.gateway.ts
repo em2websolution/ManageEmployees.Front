@@ -4,9 +4,7 @@ export interface User {
   lastName: string
   email: string
   docNumber: string
-  managerId: string
-  managerName: string
-  phoneNumbers: string[]
+  phoneNumber: string
   role: string
 }
 
@@ -22,7 +20,6 @@ export interface CreateUserRequest {
   password: string;
   confirmPassword: string;
   docNumber: string;
-  managerId: string;
   role: string;
   phoneNumber: string;
 }
@@ -34,7 +31,6 @@ export interface UpdateUserRequest {
   password?: string;
   confirmPassword?: string;
   docNumber: string;
-  managerId: string;
   role: string;
   phoneNumber: string;
 }

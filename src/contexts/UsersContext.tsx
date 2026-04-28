@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import type { User } from "@/core/domain/gateways/user.gateway";
 import type { UsersType } from "@/types/apps/userTypes";
-import { userGateway } from "@/core/infra/gateways/user.gateway.impl.singleton";
+import { userGateway } from "@/core/infra/gateways/user.gateway.impl.singleton";import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
 
 type UsersContextType = {
   users: UsersType[];
@@ -20,11 +20,9 @@ const adapter = (data: User): UsersType => ({
   email: data.email,
   firstName: data.firstName,
   lastName: data.lastName,
-  managerId: data.managerId,
   avatar: '',
-  contacts: data.phoneNumbers,
+  phoneNumber: data.phoneNumber,
   document: data.docNumber,
-  managerName: data.managerName,
 })
 
 const UsersContext = createContext<UsersContextType | undefined>(undefined);
@@ -44,7 +42,7 @@ const UsersProvider = ({ children }: Props) => {
       setUsers(users)
     } catch (error) {
       console.error(error);
-      toast.error('Erro ao buscar usuários')
+      toast.error(getApiErrorMessage(error, 'Error fetching users'))
     }
   }
 
@@ -56,14 +54,18 @@ const UsersProvider = ({ children }: Props) => {
 
     } catch (error) {
       console.error(error);
-      toast.error(`Erro ao excluir o usuário: ${(error as Error).message}`)
+      toast.error(getApiErrorMessage(error, 'Error deleting user'))
     }
   }
 
   useEffect(() => {
-    (async () => {
-      await fetchUsers()
-    })()
+    const token = window.localStorage.getItem('accessToken')
+
+    if (token) {
+      (async () => {
+        await fetchUsers()
+      })()
+    }
   }, [])
 
   return (

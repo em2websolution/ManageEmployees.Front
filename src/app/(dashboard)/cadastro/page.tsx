@@ -1,3 +1,3 @@
 export default function Page() {
-  return <h1>Página para cadastro de novos usuários!</h1>
+  return <h1>Registration page</h1>
 }

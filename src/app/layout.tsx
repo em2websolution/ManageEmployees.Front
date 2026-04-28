@@ -21,6 +21,7 @@ import '@assets/iconify-icons/generated-icons.css'
 
 import { AuthProvider } from '@/contexts/AuthContext'
 import { UsersProvider } from '@/contexts/UsersContext'
+import { TasksProvider } from '@/contexts/TasksContext'
 
 export const metadata = {
   title: 'Manage Employeers',
@@ -43,7 +44,9 @@ const RootLayout = async (props: ChildrenType) => {
         <Toaster richColors />
         <AuthProvider>
           <UsersProvider>
-            {children}
+            <TasksProvider>
+              {children}
+            </TasksProvider>
           </UsersProvider>
         </AuthProvider>
       </body>

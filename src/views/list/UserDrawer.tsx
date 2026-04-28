@@ -1,8 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // MUI Imports
-import { useEffect } from 'react'
-
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
@@ -23,6 +21,7 @@ import CustomTextField from '@core/components/mui/TextField'
 // Gateways Imports
 import { userGateway } from '@/core/infra/gateways/user.gateway.impl.singleton'
 import { useUsers } from '@/hooks/useUsers'
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
 import type { UsersType } from '@/types/apps/userTypes'
 
 
@@ -37,41 +36,22 @@ type FormValidateType = {
   lastName: string
   email: string
   role: string
-  managerId: string
-  managerName: string
   document: string
-  contacts: string[]
+  phoneNumber: string
   password: string
   passwordConfirmation: string
   isAdult: boolean
 }
 
+const roles = ['Administrator', 'Employee']
+
 const UserDrawer = (props: Props) => {
-  const { users, fetchUsers } = useUsers()
+  const { fetchUsers } = useUsers()
 
   const [isPasswordShown, setIsPasswordShown] = useState({
     password: false,
     passwordConfirmation: false
   })
-
-  const [contacts, setContacts] = useState(props?.user?.contacts);
-
-  const addContact = () => {
-    setContacts([...contacts, ""]);
-  };
-
-  const removeContact = (index: number) => {
-    const updatedContacts = contacts.filter((_, i) => i !== index);
-
-    setContacts(updatedContacts);
-  };
-
-  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const updatedContacts = [...contacts];
-
-    updatedContacts[index] = e.target.value;
-    setContacts(updatedContacts);
-  };
 
   const handleClickShowPassword = (field: 'password' | 'passwordConfirmation') => {
     setIsPasswordShown((prev) => ({
@@ -91,14 +71,12 @@ const UserDrawer = (props: Props) => {
     formState: { errors }
   } = useForm<FormValidateType>({
     defaultValues: {
-      firstName: props.user?.firstName || '',
-      lastName: props.user?.lastName || '',
-      contacts: props.user?.contacts || [],
-      document: props.user?.document || '',
-      email: props.user?.email || '',
-      role: props.user?.role || '',
-      managerId: props.user?.managerId || '',
-      managerName: props.user?.managerName || '',
+      firstName: '',
+      lastName: '',
+      document: '',
+      phoneNumber: '',
+      email: '',
+      role: '',
       password: '',
       passwordConfirmation: '',
       isAdult: false
@@ -107,36 +85,39 @@ const UserDrawer = (props: Props) => {
 
   useEffect(() => {
     if (props.user) {
-
-      setContacts([...props.user.contacts]);
-
       resetForm({
         firstName: props.user.firstName || '',
         lastName: props.user.lastName || '',
-        contacts: props.user.contacts || [],
         document: props.user.document || '',
+        phoneNumber: props.user.phoneNumber || '',
         email: props.user.email || '',
         role: props.user.role || '',
-        managerId: props.user.managerId || '',
-        managerName: props.user.managerName || '',
         password: '',
         passwordConfirmation: ''
-      });
+      })
+    } else {
+      resetForm({
+        firstName: '',
+        lastName: '',
+        document: '',
+        phoneNumber: '',
+        email: '',
+        role: '',
+        password: '',
+        passwordConfirmation: '',
+        isAdult: false
+      })
     }
-  }, [props.user, resetForm]);
+  }, [props.user, resetForm])
 
   function reset() {
-    setContacts([]);
-
     resetForm({
       firstName: '',
       lastName: '',
-      contacts: [],
       document: '',
+      phoneNumber: '',
       email: '',
       role: '',
-      managerId: '',
-      managerName: '',
       password: '',
       passwordConfirmation: '',
       isAdult: false
@@ -150,9 +131,8 @@ const UserDrawer = (props: Props) => {
         lastName: data.lastName,
         email: data.email,
         role: data.role,
-        phoneNumber: contacts?.join(',') as string,
+        phoneNumber: data.phoneNumber,
         docNumber: data.document,
-        managerId: data.managerId,
         password: data.password,
         confirmPassword: data.passwordConfirmation
       }
@@ -171,7 +151,7 @@ const UserDrawer = (props: Props) => {
       handleClose()
     } catch (e) {
       console.error(e)
-      toast.error('Error creating user')
+      toast.error(getApiErrorMessage(e, 'Error saving user'))
     }
   }
 
@@ -179,17 +159,6 @@ const UserDrawer = (props: Props) => {
     reset()
     handleClose()
   }
-
-  const roles = useMemo(() => {
-    const all = ['Director', 'Leader', 'Employee']
-
-    const userFromStorage = JSON.parse(localStorage.getItem('userData')!)
-
-    if (userFromStorage?.role === 'Director') return all
-    if (userFromStorage?.role === 'Leader') return all.slice(1)
-
-    return all.slice(2)
-  }, [])
 
   return (
     <Drawer
@@ -255,40 +224,15 @@ const UserDrawer = (props: Props) => {
             )}
           />
           <Controller
-            name="contacts"
+            name='phoneNumber'
             control={control}
             render={({ field }) => (
-              <>
-                {contacts?.map((contact, index) => (
-                  <CustomTextField
-                    key={index}
-                    {...field}
-                    fullWidth
-                    label={`Contact ${index + 1}`}
-                    placeholder="202 555 0111"
-                    value={contact}
-                    onChange={(e: any) => handleContactChange(e, index)}
-                    slotProps={{
-                      input: {
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton onClick={addContact}>
-                              <i className="bx-plus" />
-                            </IconButton>
-                            {index > 0 && (
-                              <IconButton onClick={() => removeContact(index)}>
-                                <i className="bx-trash" />
-                              </IconButton>
-                            )}
-                          </InputAdornment>
-                        ),
-                      },
-                    }}
-                    error={Boolean(errors.contacts?.[index])}
-                    helperText={errors.contacts?.[index]?.message || ""}
-                  />
-                ))}
-              </>
+              <CustomTextField
+                {...field}
+                fullWidth
+                label='Phone Number'
+                placeholder='202 555 0111'
+              />
             )}
           />
           <Controller
@@ -325,27 +269,6 @@ const UserDrawer = (props: Props) => {
                     </MenuItem>
                   ))
                 }
-              </CustomTextField>
-            )}
-          />
-          <Controller
-            name='managerId'
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <CustomTextField
-                select
-                fullWidth
-                id='select-manager'
-                label='Select Manager'
-                {...field}
-                error={Boolean(errors.managerId)}
-              >
-                {users.map((user) => (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.firstName} {user.lastName}
-                  </MenuItem>
-                ))}
               </CustomTextField>
             )}
           />
@@ -436,7 +359,13 @@ const UserDrawer = (props: Props) => {
             }}
             render={({ field }) => (
               <div className="flex items-center">
-                <Checkbox {...field} />
+                <Checkbox
+                  checked={!!field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
+                />
                 <Typography variant="body2" color={errors.isAdult ? "error" : "textPrimary"}>
                   I confirm that I am over 18 years old.
                 </Typography>

@@ -1,18 +1,15 @@
 'use client'
 
-import { useEffect } from "react";
+import { useEffect } from "react"
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
 
+import TaskList from "@/views/tasks"
 
-import UserList from "@/views/list";
-
-import { useUsers } from "@/hooks/useUsers";
-
+import { useTasks } from "@/hooks/useTasks"
 
 export default function Page() {
-  const { users, fetchUsers } = useUsers()
-
+  const { tasks, fetchTasks } = useTasks()
   const router = useRouter()
 
   useEffect(() => {
@@ -21,12 +18,10 @@ export default function Page() {
     if (!userDataJson) {
       router.push('/login')
     } else {
-      fetchUsers()
+      fetchTasks()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return (
-    <UserList userData={users} />
-  )
+  return <TaskList taskData={tasks} />
 }
