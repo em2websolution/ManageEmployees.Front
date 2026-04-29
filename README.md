@@ -45,7 +45,7 @@ NEXT_PUBLIC_BASE_URL=https://localhost:64715/
 src/
 ├── app/                    → Routes (App Router)
 │   ├── (blank-layout-pages)/  → Login page (no sidebar)
-│   └── (dashboard)/           → Protected pages (Home, Tasks)
+│   └── (app)/                → Protected pages (Employees, Tasks)
 ├── components/             → Providers, Layout components
 ├── configs/                → Theme, auth config
 ├── contexts/               → AuthContext, UsersContext, TasksContext
@@ -77,7 +77,7 @@ src/
 | Route | Layout | Description |
 |-------|--------|-------------|
 | `/login` | Blank | Authentication form |
-| `/home` | Dashboard | Employee list with CRUD |
+| `/employees` | App | Employee list with CRUD |
 | `/tasks` | Dashboard | Task list with CRUD |
 
 ---
@@ -90,7 +90,7 @@ src/
 - Login/logout with redirect
 - Role and userId persisted for UI display
 
-### User Management (`/home`)
+### User Management (`/employees`)
 - List all users with role column
 - Create user via drawer (firstName, lastName, email, password, role, phoneNumber, docNumber)
 - Edit/delete users

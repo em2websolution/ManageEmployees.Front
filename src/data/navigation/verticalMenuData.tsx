@@ -3,9 +3,9 @@ import type { VerticalMenuDataType } from '@/types/menuTypes'
 
 const verticalMenuData = (): VerticalMenuDataType[] => [
   {
-    label: 'Home',
-    href: '/home',
-    icon: 'bx-home'
+    label: 'Employees',
+    href: '/employees',
+    icon: 'bx-group'
   },
   {
     label: 'Tasks',

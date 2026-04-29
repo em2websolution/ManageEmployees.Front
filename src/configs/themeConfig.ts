@@ -52,7 +52,7 @@ export type Config = {
 
 const themeConfig: Config = {
   templateName: 'Manager Employees',
-  homePageUrl: '/home',
+  homePageUrl: '/employees',
   settingsCookieName: 'sneat-mui-next-demo-1',
   mode: 'system', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'

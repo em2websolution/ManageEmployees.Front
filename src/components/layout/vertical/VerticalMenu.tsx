@@ -58,8 +58,8 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='bx-bxs-circle' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <MenuItem href='/home' icon={<i className='bx-home' />}>
-          Home
+        <MenuItem href='/employees' icon={<i className='bx-group' />}>
+          Employees
         </MenuItem>
         <MenuItem href='/tasks' icon={<i className='bx-task' />}>
           Tasks

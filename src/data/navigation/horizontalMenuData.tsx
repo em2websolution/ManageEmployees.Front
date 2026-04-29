@@ -3,9 +3,9 @@ import type { HorizontalMenuDataType } from '@/types/menuTypes'
 
 const horizontalMenuData = (): HorizontalMenuDataType[] => [
   {
-    label: 'Home',
-    href: '/home',
-    icon: 'bx-home'
+    label: 'Employees',
+    href: '/employees',
+    icon: 'bx-group'
   },
   {
     label: 'Tasks',

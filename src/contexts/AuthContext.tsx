@@ -77,7 +77,7 @@ const AuthProvider = ({ children }: Props) => {
 
         httpInstance.setAuthorizationHeader('Bearer ' + response.accessToken)
 
-        router.push('/home')
+        router.push('/employees')
         setLoading(false)
       })
       .catch((err: any) => {
