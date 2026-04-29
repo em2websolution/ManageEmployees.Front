@@ -8,8 +8,13 @@ export class UserGatewayImpl implements UserGateway {
     private readonly api: HttpClient,
   ) { }
 
-  async getAllUsers(page: number, pageSize: number): Promise<PagedResult<User>> {
-    return this.api.get<PagedResult<User>>(`Login/ListAll?page=${page}&pageSize=${pageSize}`)
+  async getAllUsers(page: number, pageSize: number, search?: string, role?: string): Promise<PagedResult<User>> {
+    const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) })
+
+    if (search) params.set('search', search)
+    if (role) params.set('role', role)
+
+    return this.api.get<PagedResult<User>>(`Login/ListAll?${params.toString()}`)
   }
 
   async signIn(userName: string, password: string): Promise<SignIn> {

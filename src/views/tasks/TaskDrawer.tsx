@@ -32,6 +32,8 @@ type FormValues = {
 
 const statuses = ['Pending', 'InProgress', 'Completed']
 
+const getToday = () => new Date().toISOString().split('T')[0]
+
 const TaskDrawer = (props: Props) => {
   const { fetchTasks } = useTasks()
   const { open, handleClose } = props
@@ -46,7 +48,7 @@ const TaskDrawer = (props: Props) => {
       title: '',
       description: '',
       status: 'Pending',
-      dueDate: ''
+      dueDate: getToday()
     }
   })
 
@@ -63,7 +65,7 @@ const TaskDrawer = (props: Props) => {
         title: '',
         description: '',
         status: 'Pending',
-        dueDate: ''
+        dueDate: getToday()
       })
     }
   }, [props.task, resetForm])
@@ -101,7 +103,7 @@ const TaskDrawer = (props: Props) => {
       title: '',
       description: '',
       status: 'Pending',
-      dueDate: ''
+      dueDate: getToday()
     })
 
     handleClose()

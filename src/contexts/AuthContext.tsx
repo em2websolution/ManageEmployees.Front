@@ -75,6 +75,12 @@ const AuthProvider = ({ children }: Props) => {
           userId: response.userId,
         }))
 
+        setUser({
+          role: response.role,
+          username: response.firstName,
+          userId: response.userId,
+        })
+
         httpInstance.setAuthorizationHeader('Bearer ' + response.accessToken)
 
         router.push('/employees')

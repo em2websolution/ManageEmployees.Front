@@ -10,27 +10,25 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
 import type { TextFieldProps } from '@mui/material/TextField'
 
 import TablePagination from '@mui/material/TablePagination'
 
 import classnames from 'classnames'
-import { rankItem } from '@tanstack/match-sorter-utils'
 
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getFilteredRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFacetedMinMaxValues,
   getPaginationRowModel,
   getSortedRowModel
 } from '@tanstack/react-table'
-import type { ColumnDef, FilterFn } from '@tanstack/react-table'
-import type { RankingInfo } from '@tanstack/match-sorter-utils'
+import type { ColumnDef } from '@tanstack/react-table'
 
 import type { UsersType } from '@/types/apps/userTypes'
 
@@ -43,15 +41,6 @@ import tableStyles from '@core/styles/table.module.css'
 import { useUsers } from '@/hooks/useUsers'
 import ConfirmationModal from '@/components/confirmationModal'
 
-declare module '@tanstack/table-core' {
-  interface FilterFns {
-    fuzzy: FilterFn<unknown>
-  }
-  interface FilterMeta {
-    itemRank: RankingInfo
-  }
-}
-
 type UsersTypeWithAction = UsersType & {
   action?: string
 }
@@ -61,16 +50,6 @@ type UserRoleType = {
 }
 
 const Icon = styled('i')({})
-
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  const itemRank = rankItem(row.getValue(columnId), value)
-
-  addMeta({
-    itemRank
-  })
-
-  return itemRank.passed
-}
 
 const DebouncedInput = ({
   value: initialValue,
@@ -115,10 +94,43 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   const [userOpen, setUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
+  const [roleFilter, setRoleFilter] = useState('All')
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [userId, setUserId] = useState('')
 
   const { deleteUser, page, pageSize, totalCount, fetchUsers, setPage, setPageSize } = useUsers()
+
+  const getFilterParams = (overrides?: { search?: string; role?: string }) => {
+    const search = overrides?.search ?? globalFilter
+    const role = overrides?.role ?? roleFilter
+
+    return {
+      search: search.length >= 3 ? search : undefined,
+      role: role && role !== 'All' ? role : undefined
+    }
+  }
+
+  const handleSearch = (value: string | number) => {
+    const search = String(value)
+
+    setGlobalFilter(search)
+
+    if (search.length >= 3 || search.length === 0) {
+      const params = getFilterParams({ search })
+
+      setPage(1)
+      fetchUsers(1, pageSize, search.length >= 3 ? search : undefined, params.role)
+    }
+  }
+
+  const handleRoleChange = (value: string) => {
+    setRoleFilter(value)
+    setPage(1)
+
+    const params = getFilterParams({ role: value })
+
+    fetchUsers(1, pageSize, params.search, value && value !== 'All' ? value : undefined)
+  }
 
   const columns = useMemo<ColumnDef<UsersTypeWithAction, any>[]>(
     () => [
@@ -193,29 +205,19 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   const table = useReactTable({
     data: tableData ?? [],
     columns,
-    filterFns: {
-      fuzzy: fuzzyFilter
-    },
     state: {
-      rowSelection,
-      globalFilter
+      rowSelection
     },
     initialState: {
       pagination: {
         pageSize: pageSize
       }
     },
-    enableRowSelection: true, 
-    globalFilterFn: fuzzyFilter,
+    enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
-    onGlobalFilterChange: setGlobalFilter,
-    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues()
+    getPaginationRowModel: getPaginationRowModel()
   })
 
   const getAvatar = (params: Pick<UsersType, 'avatar' | 'firstName'>) => {
@@ -240,24 +242,40 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
       />
       <Card>
         <CardHeader title='Manage employees' className='pbe-4' />
-        <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
-          <DebouncedInput
-            value={globalFilter ?? ''}
-            onChange={value => setGlobalFilter(String(value))}
-            placeholder='Search User'
-            className='max-sm:is-full'
-          />
-          <Button
-            variant='contained'
-            startIcon={<i className='bx-plus' />}
-            onClick={() => {
-              setUserId('')
-              setUserOpen(true)
-            }}
-            className='max-sm:is-full'
-          >
-            Add New User
-          </Button>
+        <div className='flex flex-col gap-4 p-6 border-bs'>
+          <div className='flex justify-between flex-col items-start md:flex-row md:items-center gap-4'>
+            <div className='flex flex-col md:flex-row items-start md:items-center gap-4 is-full md:is-auto'>
+              <DebouncedInput
+                value={globalFilter ?? ''}
+                onChange={handleSearch}
+                placeholder='Search User (min 3 chars)'
+                className='is-full md:is-auto'
+              />
+            <FormControl size='small' className='is-full md:min-is-[160px] md:is-auto'>
+                <InputLabel>Role</InputLabel>
+                <Select
+                  label='Role'
+                  value={roleFilter}
+                  onChange={e => handleRoleChange(e.target.value)}
+                >
+                  <MenuItem value='All'>All</MenuItem>
+                  <MenuItem value='Administrator'>Administrator</MenuItem>
+                  <MenuItem value='Employee'>Employee</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            <Button
+              variant='contained'
+              startIcon={<i className='bx-plus' />}
+              onClick={() => {
+                setUserId('')
+                setUserOpen(true)
+              }}
+              className='is-full md:is-auto'
+            >
+              Add New User
+            </Button>
+          </div>
         </div>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
@@ -288,7 +306,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
                 </tr>
               ))}
             </thead>
-            {table.getFilteredRowModel().rows?.length === 0 ? (
+            {table.getRowModel().rows?.length === 0 ? (
               <tbody>
                 <tr>
                   <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
@@ -320,17 +338,19 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
           page={page - 1}
           onPageChange={(_, newPage) => {
             const nextPage = newPage + 1
+            const params = getFilterParams()
 
             setPage(nextPage)
-            fetchUsers(nextPage, pageSize)
+            fetchUsers(nextPage, pageSize, params.search, params.role)
           }}
           rowsPerPage={pageSize}
           onRowsPerPageChange={e => {
             const newPageSize = parseInt(e.target.value, 10)
+            const params = getFilterParams()
 
             setPageSize(newPageSize)
             setPage(1)
-            fetchUsers(1, newPageSize)
+            fetchUsers(1, newPageSize, params.search, params.role)
           }}
           rowsPerPageOptions={[5, 10, 25, 50]}
         />

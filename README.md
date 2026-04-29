@@ -92,16 +92,25 @@ src/
 
 ### User Management (`/employees`)
 - List all users with role column
+- **Server-side pagination** with page/pageSize controls
+- **Debounced search** (min 3 characters) — searches FirstName, LastName, Email, DocNumber, PhoneNumber
+- **Role filter** — select dropdown (All, Administrator, Employee) — default: All
 - Create user via drawer (firstName, lastName, email, password, role, phoneNumber, docNumber)
 - Edit/delete users
 - Roles: Administrator, Employee
 
 ### Task Management (`/tasks`)
 - List all tasks in table
+- **Server-side pagination** with page/pageSize controls
+- **Debounced search** (min 3 characters) — searches Title and Description
+- **Status filter** — select dropdown (All, Pending, InProgress, Completed) — default: All
+- **Date range filter** — Start Date and End Date date pickers (inclusive end date)
+- Dynamic sort: DueDate ASC when date filters active, CreatedAt DESC otherwise
 - Create task via drawer (title, description, status, dueDate)
 - Edit/delete tasks
 - UserId automatically set from JWT (not sent by frontend)
 - Status values: Pending, InProgress, Completed
+- **Responsive filter layout** — full-width on mobile, inline on desktop
 
 ---
 
@@ -129,18 +138,42 @@ All API calls go through `AxiosHttpClient` singleton:
 
 ### Endpoints Consumed
 
-| Gateway | Method | Backend Route |
-|---------|--------|---------------|
-| UserGateway | signIn | POST `/Login/SignIn` |
-| UserGateway | signUp | POST `/Login/SignUp` |
-| UserGateway | getAllUsers | GET `/Login/ListAll` |
-| UserGateway | updateUser | PUT `/Login/{userId}` |
-| UserGateway | deleteUser | DELETE `/Login/{userId}` |
-| TaskGateway | getAllTasks | GET `/Tasks` |
-| TaskGateway | getTaskById | GET `/Tasks/{id}` |
-| TaskGateway | createTask | POST `/Tasks` |
-| TaskGateway | updateTask | PUT `/Tasks/{id}` |
-| TaskGateway | deleteTask | DELETE `/Tasks/{id}` |
+| Gateway | Method | Backend Route | Query Params |
+|---------|--------|---------------|--------------|
+| UserGateway | signIn | POST `/Login/SignIn` | — |
+| UserGateway | signUp | POST `/Login/SignUp` | — |
+| UserGateway | getAllUsers | GET `/Login/ListAll` | page, pageSize, search, role |
+| UserGateway | updateUser | PUT `/Login/{userId}` | — |
+| UserGateway | deleteUser | DELETE `/Login/{userId}` | — |
+| TaskGateway | getAllTasks | GET `/Tasks` | page, pageSize, search, status, startDate, endDate |
+| TaskGateway | getTaskById | GET `/Tasks/{id}` | — |
+| TaskGateway | createTask | POST `/Tasks` | — |
+| TaskGateway | updateTask | PUT `/Tasks/{id}` | — |
+| TaskGateway | deleteTask | DELETE `/Tasks/{id}` | — |
+
+### Pagination Response Model
+
+All list endpoints return `PagedResult<T>`:
+
+```typescript
+interface PagedResult<T> {
+  items: T[]
+  page: number
+  pageSize: number
+  totalCount: number
+  totalPages: number
+}
+```
+
+### Filter Behavior
+
+| Feature | Users Table | Tasks Table |
+|---------|-------------|-------------|
+| Search | Min 3 chars, debounced 500ms | Min 3 chars, debounced 500ms |
+| Select Filter | Role (All / Administrator / Employee) | Status (All / Pending / InProgress / Completed) |
+| Date Range | — | Start Date + End Date (inclusive) |
+| Default Select | "All" (no filter sent to API) | "All" (no filter sent to API) |
+| Responsive | Full-width mobile, inline desktop | Full-width mobile, inline desktop |
 
 ---
 

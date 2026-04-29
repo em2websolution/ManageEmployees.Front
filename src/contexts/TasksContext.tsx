@@ -17,7 +17,7 @@ type TasksContextType = {
   totalPages: number
   setPage: (page: number) => void
   setPageSize: (pageSize: number) => void
-  fetchTasks: (page?: number, pageSize?: number) => Promise<void>
+  fetchTasks: (page?: number, pageSize?: number, search?: string, status?: string, startDate?: string, endDate?: string) => Promise<void>
   createTask: (data: CreateTaskRequest) => Promise<void>
   updateTask: (id: string, data: UpdateTaskRequest) => Promise<void>
   deleteTask: (id: string) => Promise<void>
@@ -46,11 +46,11 @@ const TasksProvider = ({ children }: Props) => {
   const [totalCount, setTotalCount] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
 
-  async function fetchTasks(p?: number, ps?: number) {
+  async function fetchTasks(p?: number, ps?: number, search?: string, status?: string, startDate?: string, endDate?: string) {
     try {
       const currentPage = p ?? page
       const currentPageSize = ps ?? pageSize
-      const res = await taskGateway.getAllTasks(currentPage, currentPageSize)
+      const res = await taskGateway.getAllTasks(currentPage, currentPageSize, search, status, startDate, endDate)
       const mapped = res.items.map(adapter)
 
       setTasks(mapped)

@@ -16,7 +16,7 @@ type UsersContextType = {
   totalPages: number;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
-  fetchUsers: (page?: number, pageSize?: number) => Promise<void>;
+  fetchUsers: (page?: number, pageSize?: number, search?: string, role?: string) => Promise<void>;
   deleteUser(userId: string): Promise<void>;
 }
 
@@ -44,11 +44,11 @@ const UsersProvider = ({ children }: Props) => {
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  async function fetchUsers(p?: number, ps?: number) {
+  async function fetchUsers(p?: number, ps?: number, search?: string, role?: string) {
     try {
       const currentPage = p ?? page
       const currentPageSize = ps ?? pageSize
-      const res = await userGateway.getAllUsers(currentPage, currentPageSize)
+      const res = await userGateway.getAllUsers(currentPage, currentPageSize, search, role)
       const mapped = res.items.map(adapter)
 
       setUsers(mapped)

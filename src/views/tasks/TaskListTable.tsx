@@ -10,25 +10,23 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Chip from '@mui/material/Chip'
 import TablePagination from '@mui/material/TablePagination'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
 import type { TextFieldProps } from '@mui/material/TextField'
 
 import classnames from 'classnames'
-import { rankItem } from '@tanstack/match-sorter-utils'
 
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getFilteredRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFacetedMinMaxValues,
   getPaginationRowModel,
   getSortedRowModel
 } from '@tanstack/react-table'
-import type { ColumnDef, FilterFn } from '@tanstack/react-table'
-import type { RankingInfo } from '@tanstack/match-sorter-utils'
+import type { ColumnDef } from '@tanstack/react-table'
 
 import type { TaskType } from '@/types/apps/taskTypes'
 import type { ThemeColor } from '@core/types'
@@ -39,15 +37,6 @@ import { useTasks } from '@/hooks/useTasks'
 
 import tableStyles from '@core/styles/table.module.css'
 
-declare module '@tanstack/table-core' {
-  interface FilterFns {
-    fuzzy: FilterFn<unknown>
-  }
-  interface FilterMeta {
-    itemRank: RankingInfo
-  }
-}
-
 type TaskTypeWithAction = TaskType & {
   action?: string
 }
@@ -56,14 +45,6 @@ const statusColorMap: Record<string, ThemeColor> = {
   Pending: 'warning',
   InProgress: 'info',
   Completed: 'success'
-}
-
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  const itemRank = rankItem(row.getValue(columnId), value)
-
-  addMeta({ itemRank })
-
-  return itemRank.passed
 }
 
 const DebouncedInput = ({
@@ -100,10 +81,67 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [selectedTaskId, setSelectedTaskId] = useState('')
 
   const { deleteTask, page, pageSize, totalCount, fetchTasks, setPage, setPageSize } = useTasks()
+
+  const getFilterParams = (overrides?: { search?: string; status?: string; start?: string; end?: string }) => {
+    const search = overrides?.search ?? globalFilter
+    const status = overrides?.status ?? statusFilter
+    const start = overrides?.start ?? startDate
+    const end = overrides?.end ?? endDate
+
+    return {
+      search: search.length >= 3 ? search : undefined,
+      status: status && status !== 'All' ? status : undefined,
+      startDate: start || undefined,
+      endDate: end || undefined
+    }
+  }
+
+  const handleSearch = (value: string | number) => {
+    const search = String(value)
+
+    setGlobalFilter(search)
+
+    if (search.length >= 3 || search.length === 0) {
+      const params = getFilterParams({ search })
+
+      setPage(1)
+      fetchTasks(1, pageSize, search.length >= 3 ? search : undefined, params.status, params.startDate, params.endDate)
+    }
+  }
+
+  const handleStatusChange = (value: string) => {
+    setStatusFilter(value)
+    setPage(1)
+
+    const params = getFilterParams({ status: value })
+
+    fetchTasks(1, pageSize, params.search, value && value !== 'All' ? value : undefined, params.startDate, params.endDate)
+  }
+
+  const handleStartDateChange = (value: string) => {
+    setStartDate(value)
+    setPage(1)
+
+    const params = getFilterParams({ start: value })
+
+    fetchTasks(1, pageSize, params.search, params.status, value || undefined, params.endDate)
+  }
+
+  const handleEndDateChange = (value: string) => {
+    setEndDate(value)
+    setPage(1)
+
+    const params = getFilterParams({ end: value })
+
+    fetchTasks(1, pageSize, params.search, params.status, params.startDate, value || undefined)
+  }
 
   const columns = useMemo<ColumnDef<TaskTypeWithAction, any>[]>(
     () => [
@@ -177,12 +215,8 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
   const table = useReactTable({
     data: tableData ?? [],
     columns,
-    filterFns: {
-      fuzzy: fuzzyFilter
-    },
     state: {
-      rowSelection,
-      globalFilter
+      rowSelection
     },
     initialState: {
       pagination: {
@@ -190,16 +224,10 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
       }
     },
     enableRowSelection: true,
-    globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
-    onGlobalFilterChange: setGlobalFilter,
-    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues()
+    getPaginationRowModel: getPaginationRowModel()
   })
 
   return (
@@ -214,24 +242,59 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
       />
       <Card>
         <CardHeader title='Manage Tasks' className='pbe-4' />
-        <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
-          <DebouncedInput
-            value={globalFilter ?? ''}
-            onChange={value => setGlobalFilter(String(value))}
-            placeholder='Search Task'
-            className='max-sm:is-full'
-          />
-          <Button
-            variant='contained'
-            startIcon={<i className='bx-plus' />}
-            onClick={() => {
-              setSelectedTaskId('')
-              setDrawerOpen(true)
-            }}
-            className='max-sm:is-full'
-          >
-            Add New Task
-          </Button>
+        <div className='flex flex-col gap-4 p-6 border-bs'>
+          <div className='flex justify-between flex-col items-start md:flex-row md:items-center gap-4'>
+            <DebouncedInput
+              value={globalFilter ?? ''}
+              onChange={handleSearch}
+              placeholder='Search Task (min 3 chars)'
+              className='is-full md:is-auto'
+            />
+            <Button
+              variant='contained'
+              startIcon={<i className='bx-plus' />}
+              onClick={() => {
+                setSelectedTaskId('')
+                setDrawerOpen(true)
+              }}
+              className='is-full md:is-auto'
+            >
+              Add New Task
+            </Button>
+          </div>
+          <div className='flex flex-col items-start md:flex-row md:items-center gap-4'>
+            <FormControl size='small' className='is-full md:min-is-[160px] md:is-auto'>
+              <InputLabel>Status</InputLabel>
+              <Select
+                label='Status'
+                value={statusFilter}
+                onChange={e => handleStatusChange(e.target.value)}
+              >
+                <MenuItem value='All'>All</MenuItem>
+                <MenuItem value='Pending'>Pending</MenuItem>
+                <MenuItem value='InProgress'>In Progress</MenuItem>
+                <MenuItem value='Completed'>Completed</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              label='Start Date'
+              type='date'
+              size='small'
+              value={startDate}
+              onChange={e => handleStartDateChange(e.target.value)}
+              slotProps={{ inputLabel: { shrink: true } }}
+              className='is-full md:is-auto'
+            />
+            <TextField
+              label='End Date'
+              type='date'
+              size='small'
+              value={endDate}
+              onChange={e => handleEndDateChange(e.target.value)}
+              slotProps={{ inputLabel: { shrink: true } }}
+              className='is-full md:is-auto'
+            />
+          </div>
         </div>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
@@ -260,7 +323,7 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
                 </tr>
               ))}
             </thead>
-            {table.getFilteredRowModel().rows?.length === 0 ? (
+            {table.getRowModel().rows?.length === 0 ? (
               <tbody>
                 <tr>
                   <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
@@ -290,17 +353,19 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
           page={page - 1}
           onPageChange={(_, newPage) => {
             const nextPage = newPage + 1
+            const params = getFilterParams()
 
             setPage(nextPage)
-            fetchTasks(nextPage, pageSize)
+            fetchTasks(nextPage, pageSize, params.search, params.status, params.startDate, params.endDate)
           }}
           rowsPerPage={pageSize}
           onRowsPerPageChange={e => {
             const newPageSize = parseInt(e.target.value, 10)
+            const params = getFilterParams()
 
             setPageSize(newPageSize)
             setPage(1)
-            fetchTasks(1, newPageSize)
+            fetchTasks(1, newPageSize, params.search, params.status, params.startDate, params.endDate)
           }}
           rowsPerPageOptions={[5, 10, 25, 50]}
         />
