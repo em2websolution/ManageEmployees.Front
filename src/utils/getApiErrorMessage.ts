@@ -6,13 +6,15 @@ export const getApiErrorMessage = (error: unknown, fallback = 'An unexpected err
 
   if (!data) return fallback
 
-  if (typeof data === 'string') return data
+  // RFC 7807 (ApiErrorResponse)
+  if (data.detail) return data.detail
+  if (data.title) return data.title
 
+  // Legacy formats
   if (data.Details) return data.Details
-
   if (data.Error) return data.Error
 
-  if (data.title) return data.title
+  if (typeof data === 'string') return data
 
   return fallback
 }
