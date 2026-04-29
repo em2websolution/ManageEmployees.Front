@@ -8,6 +8,8 @@ Single-page application for employee and task management built with **Next.js 15
 
 ## Getting Started
 
+### Local Development
+
 ```bash
 cd ManageEmployees.Front
 
@@ -21,13 +23,33 @@ npm run dev
 npm run build
 ```
 
+### Docker
+
+The frontend includes a Dockerfile (`node:18-alpine`) that runs the dev server inside the container.
+
+```bash
+# Run the full stack from the repository root
+docker compose up --build
+```
+
+| Setting | Local | Docker |
+|---------|-------|--------|
+| URL | `http://localhost:3000` | `http://localhost:3000` |
+| API Base URL | `https://localhost:64715/` | `http://localhost:64715/` |
+
+In Docker, `NEXT_PUBLIC_BASE_URL` is overridden via environment variable to use HTTP instead of HTTPS. The `src/assets/` folder is copied before `npm install` because the `postinstall` script (`build:icons`) needs access to `src/assets/iconify-icons/`.
+
 ### Environment Variables
 
-Create `.env.local` in the project root:
+Create `.env` in the project root (local development):
 
 ```dotenv
 NEXT_PUBLIC_BASE_URL=https://localhost:64715/
+NEXT_PUBLIC_SECRET_ENCRYPT_KEY=@my-secret-key-@
+NEXT_PUBLIC_VERSAO=1.0.0
 ```
+
+In Docker, these are set via `docker-compose.yml` environment variables.
 
 ---
 
