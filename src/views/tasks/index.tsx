@@ -1,10 +1,7 @@
-// MUI Imports
 import Grid from '@mui/material/Grid2'
 
-// Type Imports
 import type { TaskType } from '@/types/apps/taskTypes'
 
-// Component Imports
 import TaskListTable from './TaskListTable'
 
 const TaskList = ({ taskData }: { taskData?: TaskType[] }) => {

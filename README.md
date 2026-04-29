@@ -68,6 +68,7 @@ src/
 - **Context API**: State management for auth, users, and tasks
 - **Singleton HTTP Client**: Axios instance with JWT interceptor
 - **Auth Guard**: Pages check `accessToken` in localStorage before rendering
+- **RFC 7807 Error Handling**: `getApiErrorMessage` utility parses standard error responses
 
 ---
 

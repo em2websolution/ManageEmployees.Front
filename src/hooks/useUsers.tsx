@@ -3,7 +3,6 @@ import { useContext } from 'react'
 import { UsersContext } from '@/contexts/UsersContext'
 
 export const useUsers = () => {
-  // Hooks
   const context = useContext(UsersContext)
 
   if (!context) {

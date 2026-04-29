@@ -4,11 +4,9 @@ import { useEffect } from "react";
 
 import { useRouter } from 'next/navigation';
 
-
 import UserList from "@/views/list";
 
 import { useUsers } from "@/hooks/useUsers";
-
 
 export default function Page() {
   const { users, fetchUsers } = useUsers()

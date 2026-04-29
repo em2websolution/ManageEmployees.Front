@@ -1,12 +1,9 @@
 'use client'
 
-// React Imports
 import { useState } from 'react'
 
-// Next Imports
 import Link from 'next/link'
 
-// MUI Imports
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
@@ -14,17 +11,11 @@ import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
 
-// Type Imports
-
 import Logo from '@components/layout/shared/Logo'
 import CustomTextField from '@core/components/mui/TextField'
 
-// Config Imports
 import themeConfig from '@configs/themeConfig'
 
-// Util Imports
-
-// Styled Component Imports
 import AuthIllustrationWrapper from './AuthIllustrationWrapper'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -36,7 +27,6 @@ interface FormData {
 const LoginV1 = () => {
   const auth = useAuth()
 
-  // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [isUserInValid, setisUserInValid] = useState(false)
   const [isPasswordInValid, setisPasswordInValid] = useState(false)

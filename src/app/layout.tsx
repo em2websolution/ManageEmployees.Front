@@ -1,21 +1,15 @@
-// MUI Imports
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript'
 
-// Third-party Imports
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
 import { Toaster } from 'sonner'
 
-// Type Imports
 import type { ChildrenType } from '@core/types'
 
-// Util Imports
 import { getSystemMode } from '@core/utils/serverHelpers'
 
-// Style Imports
 import '@/app/globals.css'
 
-// Generated Icon CSS Imports
 import '@assets/iconify-icons/generated-icons.css'
 
 
@@ -31,8 +25,6 @@ export const metadata = {
 
 const RootLayout = async (props: ChildrenType) => {
   const { children } = props
-
-  // Vars
 
   const systemMode = await getSystemMode()
   const direction = 'ltr'

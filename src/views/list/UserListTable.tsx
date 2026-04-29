@@ -1,12 +1,8 @@
 'use client'
 
 
-// React Imports
 import { useEffect, useState, useMemo } from 'react'
 
-// Next Imports
-
-// MUI Imports
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
@@ -16,7 +12,6 @@ import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
 import type { TextFieldProps } from '@mui/material/TextField'
 
-// Third-party Imports
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
 
@@ -35,22 +30,13 @@ import {
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
-// Type Imports
-// import type { Locale } from '@configs/i18n'
-
 import type { UsersType } from '@/types/apps/userTypes'
 
-// Component Imports
 import UserDrawer from './UserDrawer'
 import CustomAvatar from '@core/components/mui/Avatar'
 
-
-// Util Imports
 import { getInitials } from '@/utils/getInitials'
 
-// import { getLocalizedUrl } from '@/utils/i18n'
-
-// Style Imports
 import tableStyles from '@core/styles/table.module.css'
 import { useUsers } from '@/hooks/useUsers'
 import ConfirmationModal from '@/components/confirmationModal'
@@ -72,7 +58,6 @@ type UserRoleType = {
   [key: string]: { icon: string; color: string }
 }
 
-// Styled Components
 const Icon = styled('i')({})
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -114,7 +99,6 @@ const DebouncedInput = ({
 }
 
 
-// Vars
 const userRoleObj: UserRoleType = {
 
   director: { icon: 'bx-crown', color: 'error' },
@@ -126,7 +110,6 @@ const userRoleObj: UserRoleType = {
 const columnHelper = createColumnHelper<UsersTypeWithAction>()
 
 const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
-  // States
   const [userOpen, setUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')

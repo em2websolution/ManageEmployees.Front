@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 
-// MUI Imports
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
@@ -9,16 +8,13 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import InputAdornment from '@mui/material/InputAdornment'
 
-// Third-party Imports
 import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { Checkbox } from '@mui/material'
 
-// Component Imports
 import CustomTextField from '@core/components/mui/TextField'
 
-// Gateways Imports
 import { userGateway } from '@/core/infra/gateways/user.gateway.impl.singleton'
 import { useUsers } from '@/hooks/useUsers'
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
@@ -60,10 +56,8 @@ const UserDrawer = (props: Props) => {
     }))
   }
 
-  // Props
   const { open, handleClose } = props
 
-  // Hooks
   const {
     control,
     reset: resetForm,

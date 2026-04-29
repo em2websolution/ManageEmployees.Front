@@ -3,7 +3,6 @@ import { useContext } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
 
 export const useAuth = () => {
-  // Hooks
   const context = useContext(AuthContext)
 
   if (!context) {

@@ -1,10 +1,8 @@
 'use client'
 
-// Hook Imports
 import useVerticalNav from '@menu/hooks/useVerticalNav'
 
 const NavToggle = () => {
-  // Hooks
   const { toggleVerticalNav, isBreakpointReached } = useVerticalNav()
 
   const handleClick = () => {

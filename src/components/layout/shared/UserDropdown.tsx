@@ -1,13 +1,10 @@
 'use client'
 
-// React Imports
 import { useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
-// Next Imports
 import { useRouter } from 'next/navigation'
 
-// MUI Imports
 import { styled } from '@mui/material/styles'
 import Badge from '@mui/material/Badge'
 import Popper from '@mui/material/Popper'
@@ -19,10 +16,8 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
 
-// Component Imports
 import CustomAvatar from '@core/components/mui/Avatar'
 
-// Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -37,13 +32,10 @@ const BadgeContentSpan = styled('span')({
 })
 
 const UserDropdown = () => {
-  // States
   const [open, setOpen] = useState(false)
 
-  // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
 
-  // Hooks
   const router = useRouter()
 
   const { settings } = useSettings()

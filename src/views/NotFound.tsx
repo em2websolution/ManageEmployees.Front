@@ -1,9 +1,7 @@
 'use client'
 
-// Next Imports
 import Link from 'next/link'
 
-// MUI Imports
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 

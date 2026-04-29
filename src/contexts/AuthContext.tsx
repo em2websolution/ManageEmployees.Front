@@ -31,11 +31,9 @@ type Props = {
 }
 
 const AuthProvider = ({ children }: Props) => {
-  // States
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
   const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
 
-  // Hooks
   const router = useRouter()
 
   useEffect(() => {

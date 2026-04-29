@@ -1,22 +1,15 @@
-// MUI Imports
 import { useTheme } from '@mui/material/styles'
 
-// Third-party Imports
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
-// Type Imports
 import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Menu'
 
-// Component Imports
 import { Menu, MenuItem } from '@menu/vertical-menu'
 
-// Hook Imports
 import useVerticalNav from '@menu/hooks/useVerticalNav'
 
-// Styled Component Imports
 import StyledVerticalNavExpandIcon from '@menu/styles/vertical/StyledVerticalNavExpandIcon'
 
-// Style Imports
 import menuItemStyles from '@core/styles/vertical/menuItemStyles'
 import menuSectionStyles from '@core/styles/vertical/menuSectionStyles'
 
@@ -36,11 +29,9 @@ const RenderExpandIcon = ({ open, transitionDuration }: RenderExpandIconProps) =
 )
 
 const VerticalMenu = ({ scrollMenu }: Props) => {
-  // Hooks
   const theme = useTheme()
   const verticalNavOptions = useVerticalNav()
 
-  // Vars
   const { transitionDuration, isBreakpointReached } = verticalNavOptions
 
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
@@ -60,7 +51,6 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
           })}
     >
       {/* Incase you also want to scroll NavHeader to scroll with Vertical Menu, remove NavHeader from above and paste it below this comment */}
-      {/* Vertical Menu */}
       <Menu
         popoutMenuOffset={{ mainAxis: 27 }}
         menuItemStyles={menuItemStyles(verticalNavOptions, theme)}
