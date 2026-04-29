@@ -11,6 +11,7 @@ import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
 
 type TasksContextType = {
   tasks: TaskType[]
+  loading: boolean
   page: number
   pageSize: number
   totalCount: number
@@ -41,12 +42,15 @@ type Props = {
 
 const TasksProvider = ({ children }: Props) => {
   const [tasks, setTasks] = useState<TaskType[]>([])
+  const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [totalCount, setTotalCount] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
 
   async function fetchTasks(p?: number, ps?: number, search?: string, status?: string, startDate?: string, endDate?: string) {
+    setLoading(true)
+
     try {
       const currentPage = p ?? page
       const currentPageSize = ps ?? pageSize
@@ -61,6 +65,8 @@ const TasksProvider = ({ children }: Props) => {
     } catch (error) {
       console.error(error)
       toast.error(getApiErrorMessage(error, 'Error fetching tasks'))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -110,6 +116,7 @@ const TasksProvider = ({ children }: Props) => {
     <TasksContext.Provider
       value={{
         tasks,
+        loading,
         page,
         pageSize,
         totalCount,

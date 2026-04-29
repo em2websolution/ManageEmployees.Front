@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Chip from '@mui/material/Chip'
+import LinearProgress from '@mui/material/LinearProgress'
 import TablePagination from '@mui/material/TablePagination'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
@@ -87,7 +88,7 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [selectedTaskId, setSelectedTaskId] = useState('')
 
-  const { deleteTask, page, pageSize, totalCount, fetchTasks, setPage, setPageSize } = useTasks()
+  const { deleteTask, page, pageSize, totalCount, fetchTasks, setPage, setPageSize, loading } = useTasks()
 
   const getFilterParams = (overrides?: { search?: string; status?: string; start?: string; end?: string }) => {
     const search = overrides?.search ?? globalFilter
@@ -242,6 +243,7 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
       />
       <Card>
         <CardHeader title='Manage Tasks' className='pbe-4' />
+        {loading && <LinearProgress />}
         <div className='flex flex-col gap-4 p-6 border-bs'>
           <div className='flex justify-between flex-col items-start md:flex-row md:items-center gap-4'>
             <DebouncedInput
@@ -327,7 +329,7 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
               <tbody>
                 <tr>
                   <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
-                    No data available
+                    {loading ? 'Loading...' : 'No data available'}
                   </td>
                 </tr>
               </tbody>

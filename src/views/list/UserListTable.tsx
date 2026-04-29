@@ -9,6 +9,7 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
+import LinearProgress from '@mui/material/LinearProgress'
 import { styled } from '@mui/material/styles'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
@@ -98,7 +99,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [userId, setUserId] = useState('')
 
-  const { deleteUser, page, pageSize, totalCount, fetchUsers, setPage, setPageSize } = useUsers()
+  const { deleteUser, page, pageSize, totalCount, fetchUsers, setPage, setPageSize, loading } = useUsers()
 
   const getFilterParams = (overrides?: { search?: string; role?: string }) => {
     const search = overrides?.search ?? globalFilter
@@ -242,6 +243,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
       />
       <Card>
         <CardHeader title='Manage employees' className='pbe-4' />
+        {loading && <LinearProgress />}
         <div className='flex flex-col gap-4 p-6 border-bs'>
           <div className='flex justify-between flex-col items-start md:flex-row md:items-center gap-4'>
             <div className='flex flex-col md:flex-row items-start md:items-center gap-4 is-full md:is-auto'>
@@ -310,7 +312,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
               <tbody>
                 <tr>
                   <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
-                    No data available
+                    {loading ? 'Loading...' : 'No data available'}
                   </td>
                 </tr>
               </tbody>

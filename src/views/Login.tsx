@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 
 import Logo from '@components/layout/shared/Logo'
 import CustomTextField from '@core/components/mui/TextField'
@@ -106,8 +107,8 @@ const LoginV1 = () => {
               {!signInData.password && isPasswordInValid && (
                 <Typography variant='caption' color='error'>Please, enter your password</Typography>
               )}
-              <Button fullWidth variant='contained' type='submit'>
-                Login
+              <Button fullWidth variant='contained' type='submit' disabled={auth.loading}>
+                {auth.loading ? <CircularProgress size={24} color='inherit' /> : 'Login'}
               </Button>
               <div className='mb-4 flex justify-center items-center flex-wrap'>
                 <Typography variant='body1'>

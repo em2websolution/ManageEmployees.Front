@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
@@ -43,6 +44,8 @@ const roles = ['Administrator', 'Employee']
 
 const UserDrawer = (props: Props) => {
   const { fetchUsers } = useUsers()
+
+  const [submitting, setSubmitting] = useState(false)
 
   const [isPasswordShown, setIsPasswordShown] = useState({
     password: false,
@@ -119,6 +122,8 @@ const UserDrawer = (props: Props) => {
   }
 
   const onSubmit = async (data: FormValidateType) => {
+    setSubmitting(true)
+
     try {
       const payload = {
         firstName: data.firstName,
@@ -146,6 +151,8 @@ const UserDrawer = (props: Props) => {
     } catch (e) {
       console.error(e)
       toast.error(getApiErrorMessage(e, 'Error saving user'))
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -367,8 +374,8 @@ const UserDrawer = (props: Props) => {
             )}
           />
           <div className='flex items-center gap-4'>
-            <Button variant='contained' type='submit'>
-              Submit
+            <Button variant='contained' type='submit' disabled={submitting}>
+              {submitting ? <CircularProgress size={24} color='inherit' /> : 'Submit'}
             </Button>
             <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
               Cancel

@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
@@ -36,6 +37,8 @@ const getToday = () => new Date().toISOString().split('T')[0]
 
 const TaskDrawer = (props: Props) => {
   const { fetchTasks } = useTasks()
+  const [submitting, setSubmitting] = useState(false)
+
   const { open, handleClose } = props
 
   const {
@@ -73,6 +76,8 @@ const TaskDrawer = (props: Props) => {
   const { createTask, updateTask } = useTasks()
 
   const onSubmit = async (data: FormValues) => {
+    setSubmitting(true)
+
     try {
       if (props.task) {
         await updateTask(props.task.id, {
@@ -95,6 +100,8 @@ const TaskDrawer = (props: Props) => {
     } catch (e) {
       console.error(e)
       toast.error(getApiErrorMessage(e, 'Error saving task'))
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -191,8 +198,8 @@ const TaskDrawer = (props: Props) => {
             )}
           />
           <div className='flex items-center gap-4'>
-            <Button variant='contained' type='submit'>
-              Submit
+            <Button variant='contained' type='submit' disabled={submitting}>
+              {submitting ? <CircularProgress size={24} color='inherit' /> : 'Submit'}
             </Button>
             <Button variant='tonal' color='error' type='reset' onClick={handleReset}>
               Cancel

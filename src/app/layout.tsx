@@ -16,6 +16,7 @@ import '@assets/iconify-icons/generated-icons.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { UsersProvider } from '@/contexts/UsersContext'
 import { TasksProvider } from '@/contexts/TasksContext'
+import RouteLoading from '@/components/RouteLoading'
 
 export const metadata = {
   title: 'Manage Employeers',
@@ -37,6 +38,7 @@ const RootLayout = async (props: ChildrenType) => {
         <AuthProvider>
           <UsersProvider>
             <TasksProvider>
+              <RouteLoading />
               {children}
             </TasksProvider>
           </UsersProvider>

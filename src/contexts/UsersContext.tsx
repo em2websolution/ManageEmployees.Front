@@ -10,6 +10,7 @@ import { userGateway } from "@/core/infra/gateways/user.gateway.impl.singleton";
 
 type UsersContextType = {
   users: UsersType[];
+  loading: boolean;
   page: number;
   pageSize: number;
   totalCount: number;
@@ -39,12 +40,15 @@ type Props = {
 
 const UsersProvider = ({ children }: Props) => {
   const [users, setUsers] = useState<UsersType[]>([]);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   async function fetchUsers(p?: number, ps?: number, search?: string, role?: string) {
+    setLoading(true)
+
     try {
       const currentPage = p ?? page
       const currentPageSize = ps ?? pageSize
@@ -59,6 +63,8 @@ const UsersProvider = ({ children }: Props) => {
     } catch (error) {
       console.error(error);
       toast.error(getApiErrorMessage(error, 'Error fetching users'))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -87,6 +93,7 @@ const UsersProvider = ({ children }: Props) => {
   return (
     <UsersContext.Provider value={{
       users,
+      loading,
       page,
       pageSize,
       totalCount,

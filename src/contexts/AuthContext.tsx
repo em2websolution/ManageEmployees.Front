@@ -53,7 +53,8 @@ const AuthProvider = ({ children }: Props) => {
     }
 
     initAuth()
-  }, [user?.username])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     setLoading(true)
@@ -96,8 +97,9 @@ const AuthProvider = ({ children }: Props) => {
 
   const handleLogout = () => {
     setUser(null)
-    localStorage.clear();
-    sessionStorage.clear();
+    window.localStorage.removeItem(authConfig.storageTokenKeyName)
+    window.localStorage.removeItem('userData')
+    httpInstance.setAuthorizationHeader('')
     router.push('/login')
   }
 
