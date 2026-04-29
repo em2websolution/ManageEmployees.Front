@@ -20,6 +20,7 @@ export interface UserDataType extends UserFromApi {
   username?: string
   password?: string
   avatar?: string | null
+  userId?: string
 }
 
 export type AuthValuesType = {
