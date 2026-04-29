@@ -78,7 +78,7 @@ src/
 |-------|--------|-------------|
 | `/login` | Blank | Authentication form |
 | `/employees` | App | Employee list with CRUD |
-| `/tasks` | Dashboard | Task list with CRUD |
+| `/tasks` | App | Task list with CRUD |
 
 ---
 
@@ -88,7 +88,14 @@ src/
 - JWT token stored in `localStorage`
 - Auto-injected via Axios request interceptor
 - Login/logout with redirect
-- Role and userId persisted for UI display
+- Role and userId persisted in `localStorage` for UI display
+- Login button shows `CircularProgress` spinner during authentication
+
+### Loading Indicators
+- **Route navigation**: `RouteLoading` component renders `LinearProgress` fixed at the top of the page when the pathname changes
+- **Grid tables**: `LinearProgress` below the `CardHeader` while data is being fetched (driven by context `loading` state)
+- **Form submission**: Submit buttons show `CircularProgress` and are `disabled` while submitting (prevents double-submit)
+- **Toast notifications**: Sonner library (`toast.success` / `toast.error`) for success and error feedback
 
 ### User Management (`/employees`)
 - List all users with role column
@@ -120,9 +127,8 @@ src/
 <AuthProvider>
   <UsersProvider>
     <TasksProvider>
-      <Providers> {/* Theme, Settings, Navigation */}
-        {children}
-      </Providers>
+      <RouteLoading />
+      {children}
     </TasksProvider>
   </UsersProvider>
 </AuthProvider>
@@ -198,3 +204,6 @@ interface PagedResult<T> {
 - **Axios** 1.6
 - **Tailwind CSS** 3
 - **TypeScript** 5
+- **Sonner** — Toast notifications
+- **CryptoJS** — AES encryption for passwords
+- **React Hook Form** — Form state management
