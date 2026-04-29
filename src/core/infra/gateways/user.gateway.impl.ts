@@ -1,4 +1,5 @@
 import type { User, SignIn, UserGateway, CreateUserRequest, UpdateUserRequest } from "@/core/domain/gateways/user.gateway";
+import type { PagedResult } from '@/types/pagedResult'
 
 import type { HttpClient } from "@/core/domain/services/http"
 
@@ -7,8 +8,8 @@ export class UserGatewayImpl implements UserGateway {
     private readonly api: HttpClient,
   ) { }
 
-  async getAllUsers(): Promise<User[]> {
-    return this.api.get<User[]>('Login/ListAll')
+  async getAllUsers(page: number, pageSize: number): Promise<PagedResult<User>> {
+    return this.api.get<PagedResult<User>>(`Login/ListAll?page=${page}&pageSize=${pageSize}`)
   }
 
   async signIn(userName: string, password: string): Promise<SignIn> {

@@ -35,8 +35,10 @@ export interface UpdateUserRequest {
   phoneNumber: string;
 }
 
+import type { PagedResult } from '@/types/pagedResult'
+
 export interface UserGateway {
-  getAllUsers(): Promise<User[]>;
+  getAllUsers(page: number, pageSize: number): Promise<PagedResult<User>>;
   signIn(userName: string, password: string): Promise<SignIn>;
   signOut(): Promise<void>;
   updateUser(userId: string, userData: UpdateUserRequest): Promise<void>;

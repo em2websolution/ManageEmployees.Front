@@ -12,6 +12,8 @@ import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
 import type { TextFieldProps } from '@mui/material/TextField'
 
+import TablePagination from '@mui/material/TablePagination'
+
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
 
@@ -116,7 +118,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [userId, setUserId] = useState('')
 
-  const { deleteUser } = useUsers()
+  const { deleteUser, page, pageSize, totalCount, fetchUsers, setPage, setPageSize } = useUsers()
 
   const columns = useMemo<ColumnDef<UsersTypeWithAction, any>[]>(
     () => [
@@ -200,7 +202,7 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 1000
+        pageSize: pageSize
       }
     },
     enableRowSelection: true, 
@@ -312,6 +314,26 @@ const UserListTable = ({ tableData }: { tableData?: UsersType[] }) => {
             )}
           </table>
         </div>
+        <TablePagination
+          component='div'
+          count={totalCount}
+          page={page - 1}
+          onPageChange={(_, newPage) => {
+            const nextPage = newPage + 1
+
+            setPage(nextPage)
+            fetchUsers(nextPage, pageSize)
+          }}
+          rowsPerPage={pageSize}
+          onRowsPerPageChange={e => {
+            const newPageSize = parseInt(e.target.value, 10)
+
+            setPageSize(newPageSize)
+            setPage(1)
+            fetchUsers(1, newPageSize)
+          }}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+        />
       </Card>
 
       <UserDrawer

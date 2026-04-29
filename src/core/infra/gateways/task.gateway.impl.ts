@@ -1,11 +1,12 @@
 import type { Task, CreateTaskRequest, UpdateTaskRequest, TaskGateway } from '@/core/domain/gateways/task.gateway'
+import type { PagedResult } from '@/types/pagedResult'
 import type { HttpClient } from '@/core/domain/services/http'
 
 export class TaskGatewayImpl implements TaskGateway {
   constructor(private readonly api: HttpClient) {}
 
-  async getAllTasks(): Promise<Task[]> {
-    return this.api.get<Task[]>('Tasks')
+  async getAllTasks(page: number, pageSize: number): Promise<PagedResult<Task>> {
+    return this.api.get<PagedResult<Task>>(`Tasks?page=${page}&pageSize=${pageSize}`)
   }
 
   async getTaskById(id: string): Promise<Task> {

@@ -10,7 +10,13 @@ import { userGateway } from "@/core/infra/gateways/user.gateway.impl.singleton";
 
 type UsersContextType = {
   users: UsersType[];
-  fetchUsers: () => Promise<void>;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+  setPage: (page: number) => void;
+  setPageSize: (pageSize: number) => void;
+  fetchUsers: (page?: number, pageSize?: number) => Promise<void>;
   deleteUser(userId: string): Promise<void>;
 }
 
@@ -33,13 +39,23 @@ type Props = {
 
 const UsersProvider = ({ children }: Props) => {
   const [users, setUsers] = useState<UsersType[]>([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
-  async function fetchUsers() {
+  async function fetchUsers(p?: number, ps?: number) {
     try {
-      const res = await userGateway.getAllUsers()
-      const users = res.map(adapter)
+      const currentPage = p ?? page
+      const currentPageSize = ps ?? pageSize
+      const res = await userGateway.getAllUsers(currentPage, currentPageSize)
+      const mapped = res.items.map(adapter)
 
-      setUsers(users)
+      setUsers(mapped)
+      setPage(res.page)
+      setPageSize(res.pageSize)
+      setTotalCount(res.totalCount)
+      setTotalPages(res.totalPages)
     } catch (error) {
       console.error(error);
       toast.error(getApiErrorMessage(error, 'Error fetching users'))
@@ -71,6 +87,12 @@ const UsersProvider = ({ children }: Props) => {
   return (
     <UsersContext.Provider value={{
       users,
+      page,
+      pageSize,
+      totalCount,
+      totalPages,
+      setPage,
+      setPageSize,
       fetchUsers,
       deleteUser
     }}>

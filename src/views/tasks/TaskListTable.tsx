@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Chip from '@mui/material/Chip'
+import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 
 import classnames from 'classnames'
@@ -102,7 +103,7 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [selectedTaskId, setSelectedTaskId] = useState('')
 
-  const { deleteTask } = useTasks()
+  const { deleteTask, page, pageSize, totalCount, fetchTasks, setPage, setPageSize } = useTasks()
 
   const columns = useMemo<ColumnDef<TaskTypeWithAction, any>[]>(
     () => [
@@ -185,7 +186,7 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 1000
+        pageSize: pageSize
       }
     },
     enableRowSelection: true,
@@ -283,6 +284,26 @@ const TaskListTable = ({ tableData }: { tableData?: TaskType[] }) => {
             )}
           </table>
         </div>
+        <TablePagination
+          component='div'
+          count={totalCount}
+          page={page - 1}
+          onPageChange={(_, newPage) => {
+            const nextPage = newPage + 1
+
+            setPage(nextPage)
+            fetchTasks(nextPage, pageSize)
+          }}
+          rowsPerPage={pageSize}
+          onRowsPerPageChange={e => {
+            const newPageSize = parseInt(e.target.value, 10)
+
+            setPageSize(newPageSize)
+            setPage(1)
+            fetchTasks(1, newPageSize)
+          }}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+        />
       </Card>
 
       <TaskDrawer

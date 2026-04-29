@@ -11,7 +11,13 @@ import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
 
 type TasksContextType = {
   tasks: TaskType[]
-  fetchTasks: () => Promise<void>
+  page: number
+  pageSize: number
+  totalCount: number
+  totalPages: number
+  setPage: (page: number) => void
+  setPageSize: (pageSize: number) => void
+  fetchTasks: (page?: number, pageSize?: number) => Promise<void>
   createTask: (data: CreateTaskRequest) => Promise<void>
   updateTask: (id: string, data: UpdateTaskRequest) => Promise<void>
   deleteTask: (id: string) => Promise<void>
@@ -35,13 +41,23 @@ type Props = {
 
 const TasksProvider = ({ children }: Props) => {
   const [tasks, setTasks] = useState<TaskType[]>([])
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+  const [totalCount, setTotalCount] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
 
-  async function fetchTasks() {
+  async function fetchTasks(p?: number, ps?: number) {
     try {
-      const res = await taskGateway.getAllTasks()
-      const mapped = res.map(adapter)
+      const currentPage = p ?? page
+      const currentPageSize = ps ?? pageSize
+      const res = await taskGateway.getAllTasks(currentPage, currentPageSize)
+      const mapped = res.items.map(adapter)
 
       setTasks(mapped)
+      setPage(res.page)
+      setPageSize(res.pageSize)
+      setTotalCount(res.totalCount)
+      setTotalPages(res.totalPages)
     } catch (error) {
       console.error(error)
       toast.error(getApiErrorMessage(error, 'Error fetching tasks'))
@@ -94,6 +110,12 @@ const TasksProvider = ({ children }: Props) => {
     <TasksContext.Provider
       value={{
         tasks,
+        page,
+        pageSize,
+        totalCount,
+        totalPages,
+        setPage,
+        setPageSize,
         fetchTasks,
         createTask,
         updateTask,

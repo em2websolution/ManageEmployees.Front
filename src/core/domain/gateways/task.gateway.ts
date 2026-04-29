@@ -22,8 +22,10 @@ export interface UpdateTaskRequest {
   dueDate: string
 }
 
+import type { PagedResult } from '@/types/pagedResult'
+
 export interface TaskGateway {
-  getAllTasks(): Promise<Task[]>
+  getAllTasks(page: number, pageSize: number): Promise<PagedResult<Task>>
   getTaskById(id: string): Promise<Task>
   createTask(data: CreateTaskRequest): Promise<Task>
   updateTask(id: string, data: UpdateTaskRequest): Promise<Task>
