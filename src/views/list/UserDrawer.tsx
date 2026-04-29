@@ -19,25 +19,13 @@ import CustomTextField from '@core/components/mui/TextField'
 import { userGateway } from '@/core/infra/gateways/user.gateway.impl.singleton'
 import { useUsers } from '@/hooks/useUsers'
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
-import type { UsersType } from '@/types/apps/userTypes'
+import type { UsersType, UserFormValues } from '@/types/apps/userTypes'
 
 
 type Props = {
   user?: UsersType
   open: boolean
   handleClose: () => void
-}
-
-type FormValidateType = {
-  firstName: string
-  lastName: string
-  email: string
-  role: string
-  document: string
-  phoneNumber: string
-  password: string
-  passwordConfirmation: string
-  isAdult: boolean
 }
 
 const roles = ['Administrator', 'Employee']
@@ -66,7 +54,7 @@ const UserDrawer = (props: Props) => {
     reset: resetForm,
     handleSubmit,
     formState: { errors }
-  } = useForm<FormValidateType>({
+  } = useForm<UserFormValues>({
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -121,7 +109,7 @@ const UserDrawer = (props: Props) => {
     })
   }
 
-  const onSubmit = async (data: FormValidateType) => {
+  const onSubmit = async (data: UserFormValues) => {
     setSubmitting(true)
 
     try {

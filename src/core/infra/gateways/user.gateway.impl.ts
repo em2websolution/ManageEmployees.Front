@@ -2,6 +2,7 @@ import type { User, SignIn, UserGateway, CreateUserRequest, UpdateUserRequest } 
 import type { PagedResult } from '@/types/pagedResult'
 
 import type { HttpClient } from "@/core/domain/services/http"
+import { buildQueryParams } from '@/utils/buildQueryParams'
 
 export class UserGatewayImpl implements UserGateway {
   constructor(
@@ -9,12 +10,9 @@ export class UserGatewayImpl implements UserGateway {
   ) { }
 
   async getAllUsers(page: number, pageSize: number, search?: string, role?: string): Promise<PagedResult<User>> {
-    const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) })
+    const qs = buildQueryParams({ page, pageSize, search, role })
 
-    if (search) params.set('search', search)
-    if (role) params.set('role', role)
-
-    return this.api.get<PagedResult<User>>(`Login/ListAll?${params.toString()}`)
+    return this.api.get<PagedResult<User>>(`Login/ListAll?${qs}`)
   }
 
   async signIn(userName: string, password: string): Promise<SignIn> {

@@ -1,10 +1,19 @@
 import type { AxiosError } from 'axios'
 
+interface ApiErrorResponse {
+  detail?: string
+  title?: string
+  Details?: string
+  Error?: string
+}
+
 export const getApiErrorMessage = (error: unknown, fallback = 'An unexpected error occurred.'): string => {
-  const axiosError = error as AxiosError<any>
+  const axiosError = error as AxiosError<ApiErrorResponse | string>
   const data = axiosError?.response?.data
 
   if (!data) return fallback
+
+  if (typeof data === 'string') return data
 
   // RFC 7807 (ApiErrorResponse)
   if (data.detail) return data.detail
@@ -13,8 +22,6 @@ export const getApiErrorMessage = (error: unknown, fallback = 'An unexpected err
   // Legacy formats
   if (data.Details) return data.Details
   if (data.Error) return data.Error
-
-  if (typeof data === 'string') return data
 
   return fallback
 }

@@ -1,12 +1,11 @@
 'use client'
 
 
-import { useEffect, useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -15,7 +14,6 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
-import type { TextFieldProps } from '@mui/material/TextField'
 
 import TablePagination from '@mui/material/TablePagination'
 
@@ -32,6 +30,7 @@ import {
 import type { ColumnDef } from '@tanstack/react-table'
 
 import type { UsersType } from '@/types/apps/userTypes'
+import { userRoleObj } from '@/types/apps/userTypes'
 
 import UserDrawer from './UserDrawer'
 import CustomAvatar from '@core/components/mui/Avatar'
@@ -41,52 +40,13 @@ import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import { useUsers } from '@/hooks/useUsers'
 import ConfirmationModal from '@/components/confirmationModal'
+import DebouncedInput from '@/components/DebouncedInput'
 
 type UsersTypeWithAction = UsersType & {
   action?: string
 }
 
-type UserRoleType = {
-  [key: string]: { icon: string; color: string }
-}
-
 const Icon = styled('i')({})
-
-const DebouncedInput = ({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}: {
-  value: string | number
-  onChange: (value: string | number) => void
-  debounce?: number
-} & Omit<TextFieldProps, 'onChange'>) => {
-  const [value, setValue] = useState(initialValue)
-
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value)
-    }, debounce)
-
-    return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
-
-  return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
-}
-
-
-const userRoleObj: UserRoleType = {
-
-  director: { icon: 'bx-crown', color: 'error' },
-  leader: { icon: 'bx-pie-chart-alt', color: 'success' },
-  employee: { icon: 'bx-user', color: 'primary' }
-}
 
 // Column Definitions
 const columnHelper = createColumnHelper<UsersTypeWithAction>()

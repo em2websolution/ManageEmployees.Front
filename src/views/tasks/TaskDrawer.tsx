@@ -16,22 +16,14 @@ import { toast } from 'sonner'
 import CustomTextField from '@core/components/mui/TextField'
 import { useTasks } from '@/hooks/useTasks'
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
-import type { TaskType } from '@/types/apps/taskTypes'
+import type { TaskType, TaskFormValues } from '@/types/apps/taskTypes'
+import { taskStatuses } from '@/types/apps/taskTypes'
 
 type Props = {
   task?: TaskType
   open: boolean
   handleClose: () => void
 }
-
-type FormValues = {
-  title: string
-  description: string
-  status: string
-  dueDate: string
-}
-
-const statuses = ['Pending', 'InProgress', 'Completed']
 
 const getToday = () => new Date().toISOString().split('T')[0]
 
@@ -46,7 +38,7 @@ const TaskDrawer = (props: Props) => {
     reset: resetForm,
     handleSubmit,
     formState: { errors }
-  } = useForm<FormValues>({
+  } = useForm<TaskFormValues>({
     defaultValues: {
       title: '',
       description: '',
@@ -75,7 +67,7 @@ const TaskDrawer = (props: Props) => {
 
   const { createTask, updateTask } = useTasks()
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: TaskFormValues) => {
     setSubmitting(true)
 
     try {
@@ -174,7 +166,7 @@ const TaskDrawer = (props: Props) => {
                 {...field}
                 error={Boolean(errors.status)}
               >
-                {statuses.map(s => (
+                {taskStatuses.map(s => (
                   <MenuItem key={s} value={s}>
                     {s}
                   </MenuItem>

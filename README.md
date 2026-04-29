@@ -68,7 +68,7 @@ src/
 ├── app/                    → Routes (App Router)
 │   ├── (blank-layout-pages)/  → Login page (no sidebar)
 │   └── (app)/                → Protected pages (Employees, Tasks)
-├── components/             → Providers, Layout components
+├── components/             → Shared components (DebouncedInput, Providers, Layout)
 ├── configs/                → Theme, auth config
 ├── contexts/               → AuthContext, UsersContext, TasksContext
 ├── core/                   → Clean Architecture (Gateway pattern)
@@ -76,8 +76,9 @@ src/
 │   └── infra/              → Implementations (Axios, Gateway impls)
 ├── data/navigation/        → Menu definitions
 ├── hooks/                  → useAuth, useUsers, useTasks
-├── types/                  → TypeScript types
-├── utils/                  → Utility functions
+├── types/                  → Shared TypeScript types and constants
+│   └── apps/               → userTypes (form values, role map), taskTypes (form values, status map)
+├── utils/                  → Utilities (getApiErrorMessage, buildQueryParams, encryption)
 └── views/                  → UI components
     ├── Login.tsx
     ├── list/               → UserListTable, UserDrawer
@@ -90,7 +91,11 @@ src/
 - **Context API**: State management for auth, users, and tasks
 - **Singleton HTTP Client**: Axios instance with JWT interceptor
 - **Auth Guard**: Pages check `accessToken` in localStorage before rendering
-- **RFC 7807 Error Handling**: `getApiErrorMessage` utility parses standard error responses
+- **RFC 7807 Error Handling**: `getApiErrorMessage` utility with typed `ApiErrorResponse` interface
+- **Strong Typing**: No `any` in project code — all API responses, errors, and configs are typed
+- **Shared Components**: `DebouncedInput` used by both tables
+- **Shared Utils**: `buildQueryParams` for gateway query string building
+- **Shared Types**: Form values (`UserFormValues`, `TaskFormValues`), constants (`userRoleObj`, `statusColorMap`, `taskStatuses`) in `types/apps/`
 
 ---
 

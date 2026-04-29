@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
+import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
 
 import type { HttpClient, HttpRequest, RequestConfig } from '@/core/domain/services/http'
 
@@ -69,7 +69,7 @@ export class AxiosHttpClient implements HttpClient {
   private convertToAxiosConfig(config?: RequestConfig) {
     if (!config) return undefined
 
-    const axiosConfig: any = {}
+    const axiosConfig: AxiosRequestConfig = {}
 
     if (config.headers) {
       axiosConfig.headers = config.headers

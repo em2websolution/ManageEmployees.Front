@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -15,7 +15,6 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
-import type { TextFieldProps } from '@mui/material/TextField'
 
 import classnames from 'classnames'
 
@@ -30,50 +29,17 @@ import {
 import type { ColumnDef } from '@tanstack/react-table'
 
 import type { TaskType } from '@/types/apps/taskTypes'
-import type { ThemeColor } from '@core/types'
+import { statusColorMap } from '@/types/apps/taskTypes'
 
 import TaskDrawer from './TaskDrawer'
 import ConfirmationModal from '@/components/confirmationModal'
+import DebouncedInput from '@/components/DebouncedInput'
 import { useTasks } from '@/hooks/useTasks'
 
 import tableStyles from '@core/styles/table.module.css'
 
 type TaskTypeWithAction = TaskType & {
   action?: string
-}
-
-const statusColorMap: Record<string, ThemeColor> = {
-  Pending: 'warning',
-  InProgress: 'info',
-  Completed: 'success'
-}
-
-const DebouncedInput = ({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}: {
-  value: string | number
-  onChange: (value: string | number) => void
-  debounce?: number
-} & Omit<TextFieldProps, 'onChange'>) => {
-  const [value, setValue] = useState(initialValue)
-
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value)
-    }, debounce)
-
-    return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
-
-  return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
 }
 
 const columnHelper = createColumnHelper<TaskTypeWithAction>()

@@ -14,7 +14,7 @@ src/
 ├── app/                # Routes (App Router)
 │   ├── (blank-layout-pages)/  # Pages without sidebar (login)
 │   └── (app)/                 # Pages with sidebar (employees, tasks)
-├── components/         # Reusable components (Providers, RouteLoading, layout)
+├── components/         # Shared components (DebouncedInput, Providers, RouteLoading, layout)
 ├── configs/            # Configuration (theme, colors, auth)
 ├── contexts/           # Context Providers (AuthContext, UsersContext, TasksContext)
 ├── core/               # Clean Architecture frontend
@@ -22,8 +22,9 @@ src/
 │   └── infra/             # Implementations (AxiosHttpClient, Gateway impls)
 ├── data/navigation/    # Menu definitions
 ├── hooks/              # Custom hooks (useAuth, useUsers, useTasks)
-├── types/              # TypeScript types
-├── utils/              # Utilities (getApiErrorMessage, encryption)
+├── types/              # Shared TypeScript types and constants
+│   └── apps/           # userTypes (UsersType, UserFormValues, userRoleObj), taskTypes (TaskType, TaskFormValues, statusColorMap, taskStatuses)
+├── utils/              # Utilities (getApiErrorMessage, buildQueryParams, encryption)
 └── views/              # View components
     ├── Login.tsx
     ├── list/           # UserListTable, UserDrawer
@@ -54,6 +55,40 @@ const { tasks, fetchTasks, loading } = useTasks()
 import { userGateway } from '@/core/infra/gateways/user.gateway.impl.singleton'
 const users = await userGateway.getAllUsers()
 ```
+
+### Query String Building: `buildQueryParams` utility
+```typescript
+import { buildQueryParams } from '@/utils/buildQueryParams'
+const qs = buildQueryParams({ page, pageSize, search, role })
+// Filters out undefined/null/empty values automatically
+```
+
+### Error Handling: Typed `ApiErrorResponse` (RFC 7807)
+```typescript
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
+toast.error(getApiErrorMessage(error, 'Fallback message'))
+// Parses: detail → title → Details → Error → string → fallback
+```
+
+### Shared Components
+```typescript
+import DebouncedInput from '@/components/DebouncedInput'
+// Used by UserListTable and TaskListTable — 500ms debounce, min 3 chars
+```
+
+### Shared Types & Constants
+```typescript
+import type { UserFormValues } from '@/types/apps/userTypes'
+import { userRoleObj } from '@/types/apps/userTypes'
+import type { TaskFormValues } from '@/types/apps/taskTypes'
+import { statusColorMap, taskStatuses } from '@/types/apps/taskTypes'
+```
+
+### Strong Typing: No `any` in project code
+- API responses: typed interfaces (`SignIn`, `PagedResult<User>`, etc.)
+- Error handlers: `(err: unknown)` with type guards
+- HTTP config: `AxiosRequestConfig` instead of `any`
+- `any` only exists in `@core/`, `@layouts/`, `@menu/` (framework — DO NOT MODIFY)
 
 ### Forms: React Hook Form (NO Zod)
 ```tsx

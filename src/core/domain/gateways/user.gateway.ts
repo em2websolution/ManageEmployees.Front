@@ -11,6 +11,9 @@ export interface User {
 export interface SignIn {
   accessToken: string
   refreshToken: string
+  role: string
+  firstName: string
+  userId: string
 }
 
 export interface CreateUserRequest {

@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner'
 
 import type { AuthValuesType, ErrCallbackType, LoginParams, UserDataType } from './types';
+import type { SignIn } from '@/core/domain/gateways/user.gateway';
 
 import authConfig from '@configs/auth';
 
@@ -61,7 +62,7 @@ const AuthProvider = ({ children }: Props) => {
 
     userGateway
       .signIn(params.userName, params.password)
-      .then(async (response: any) => {
+      .then(async (response: SignIn) => {
 
         toast.success('Login successful!')
 
@@ -87,11 +88,11 @@ const AuthProvider = ({ children }: Props) => {
         router.push('/employees')
         setLoading(false)
       })
-      .catch((err: any) => {
+      .catch((err: unknown) => {
         toast.error(getApiErrorMessage(err, 'Login failed!'))
         setLoading(false)
-        if (err.code === 'ERR_NETWORK') return
-        if (errorCallback) errorCallback(err)
+        if (err instanceof Error && 'code' in err && (err as { code: string }).code === 'ERR_NETWORK') return
+        if (errorCallback) errorCallback(err as { [key: string]: string })
       })
   }
 
