@@ -265,3 +265,12 @@ npx sonar-scanner \
   -Dsonar.token=<YOUR_TOKEN> \
   -Dsonar.exclusions="**/node_modules/**,**/.next/**,**/public/**"
 ```
+
+### Project Documentation
+The files are in the “docs” folder
+
+| Document | Description |
+|----------|-------------|
+| [PRESENTATION.md](PRESENTATION.md) | This file — thought process and exercise summary |
+| [GENAI_USAGE.md](GENAI_USAGE.md) | AI usage methodology, contributions, and corrections |
+| [TEST_VALIDATION_PLAN.md](TEST_VALIDATION_PLAN.md) | Requirement traceability matrix and test inventory |
