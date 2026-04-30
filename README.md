@@ -28,7 +28,8 @@ npm run build
 The frontend includes a Dockerfile (`node:18-alpine`) that runs the dev server inside the container.
 
 ```bash
-# Run the full stack from the repository root
+# Run the full stack from the backend directory (ManageEmployees.Api/)
+cd ManageEmployees.Api
 docker compose up --build
 ```
 
