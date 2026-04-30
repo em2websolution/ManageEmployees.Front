@@ -13,7 +13,12 @@ const RouteLoading = () => {
   const pathname = usePathname()
   const auth = useAuth()
   const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const prevPathname = useRef(pathname)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (pathname !== prevPathname.current) {
@@ -26,7 +31,7 @@ const RouteLoading = () => {
     }
   }, [pathname])
 
-  if (!loading && !auth.loading) return null
+  if (!mounted || (!loading && !auth.loading)) return null
 
   return (
     <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999 }}>
