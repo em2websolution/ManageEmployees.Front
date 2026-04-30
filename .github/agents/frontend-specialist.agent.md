@@ -78,6 +78,6 @@ const encryptedPassword = encrypt(password, key)
 ## Bad Patterns
 ```typescript
 // DO NOT:
-const response = await axios.get('/Login/ListAll')  // Direct Axios without Gateway
+const response = await axios.get('/Users')  // Direct Axios without Gateway
 const [users, setUsers] = useState([])               // Local state for global data
 ```

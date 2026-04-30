@@ -175,10 +175,10 @@ All API calls go through `AxiosHttpClient` singleton:
 | Gateway | Method | Backend Route | Query Params |
 |---------|--------|---------------|--------------|
 | UserGateway | signIn | POST `/Login/SignIn` | — |
-| UserGateway | signUp | POST `/Login/SignUp` | — |
-| UserGateway | getAllUsers | GET `/Login/ListAll` | page, pageSize, search, role |
-| UserGateway | updateUser | PUT `/Login/{userId}` | — |
-| UserGateway | deleteUser | DELETE `/Login/{userId}` | — |
+| UserGateway | createUser | POST `/Users` | — |
+| UserGateway | getAllUsers | GET `/Users` | page, pageSize, search, role |
+| UserGateway | updateUser | PUT `/Users/{userId}` | — |
+| UserGateway | deleteUser | DELETE `/Users/{userId}` | — |
 | TaskGateway | getAllTasks | GET `/Tasks` | page, pageSize, search, status, startDate, endDate |
 | TaskGateway | getTaskById | GET `/Tasks/{id}` | — |
 | TaskGateway | createTask | POST `/Tasks` | — |

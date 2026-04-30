@@ -12,7 +12,7 @@ export class UserGatewayImpl implements UserGateway {
   async getAllUsers(page: number, pageSize: number, search?: string, role?: string): Promise<PagedResult<User>> {
     const qs = buildQueryParams({ page, pageSize, search, role })
 
-    return this.api.get<PagedResult<User>>(`Login/ListAll?${qs}`)
+    return this.api.get<PagedResult<User>>(`Users?${qs}`)
   }
 
   async signIn(userName: string, password: string): Promise<SignIn> {
@@ -27,18 +27,18 @@ export class UserGatewayImpl implements UserGateway {
   }
 
   async updateUser(userId: string, userData: UpdateUserRequest): Promise<void> {
-    const endpoint = `Login/${userId}`;
+    const endpoint = `Users/${userId}`;
 
     await this.api.put<void>(endpoint, userData);
   }
 
   async deleteUser(userId: string): Promise<void> {
-    const endpoint = `Login/${userId}`;
+    const endpoint = `Users/${userId}`;
 
     await this.api.delete<void>(endpoint);
   }
 
   async createUser(userData: CreateUserRequest): Promise<void> {
-    await this.api.post<void>('Login/SignUp', userData);
+    await this.api.post<void>('Users', userData);
   }
 }
