@@ -234,3 +234,33 @@ interface PagedResult<T> {
 - **Sonner** — Toast notifications
 - **CryptoJS** — AES encryption for passwords
 - **React Hook Form** — Form state management
+
+---
+
+## Code Quality — SonarQube
+
+The project is analyzed with **SonarQube 9.9 LTS Community Edition**.
+
+### Quality Report
+
+| Metric | Result |
+|--------|--------|
+| **Bugs** | 0 |
+| **Vulnerabilities** | 0 |
+| **Code Smells** | 0 |
+| **Duplication** | 0.0% |
+| **Security Hotspots** | 0 |
+| **Lines of Code** | 4,861 |
+
+### Running Analysis
+
+```bash
+cd ManageEmployees.Front
+
+npx sonar-scanner \
+  -Dsonar.projectKey=manage-employees-front \
+  -Dsonar.sources=src \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.token=<YOUR_TOKEN> \
+  -Dsonar.exclusions="**/node_modules/**,**/.next/**,**/public/**"
+```
