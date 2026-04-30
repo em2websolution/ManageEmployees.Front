@@ -63,7 +63,7 @@ const qs = buildQueryParams({ page, pageSize, search, role })
 // Filters out undefined/null/empty values automatically
 ```
 
-### Error Handling: Typed `ApiErrorResponse` (RFC 7807)
+### Error Handling: Typed `ApiErrorResponse`
 ```typescript
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage'
 toast.error(getApiErrorMessage(error, 'Fallback message'))

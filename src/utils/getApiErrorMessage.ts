@@ -15,7 +15,7 @@ export const getApiErrorMessage = (error: unknown, fallback = 'An unexpected err
 
   if (typeof data === 'string') return data
 
-  // RFC 7807 (ApiErrorResponse)
+  // ApiErrorResponse
   if (data.detail) return data.detail
   if (data.title) return data.title
 

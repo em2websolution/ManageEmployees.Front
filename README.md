@@ -91,7 +91,7 @@ src/
 - **Context API**: State management for auth, users, and tasks
 - **Singleton HTTP Client**: Axios instance with JWT interceptor
 - **Auth Guard**: Pages check `accessToken` in localStorage before rendering
-- **RFC 7807 Error Handling**: `getApiErrorMessage` utility with typed `ApiErrorResponse` interface
+- **Error Handling**: `getApiErrorMessage` utility with typed `ApiErrorResponse` interface
 - **Strong Typing**: No `any` in project code — all API responses, errors, and configs are typed
 - **Shared Components**: `DebouncedInput` used by both tables
 - **Shared Utils**: `buildQueryParams` for gateway query string building
